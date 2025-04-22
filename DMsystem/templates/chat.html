@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>DM Chat System</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .message { margin-bottom: 10px; }
+        input, select { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>📬 私聊系统</h1>
+
+    <form action="/register" method="POST">
+        <input type="text" name="username" placeholder="注册新用户" required>
+        <button type="submit">注册</button>
+    </form>
+
+    <h2>发送消息</h2>
+    <form method="POST">
+        <input type="text" name="sender" placeholder="发送者" required>
+        <input type="text" name="receiver" placeholder="接收者" required>
+        <input type="text" name="message" placeholder="消息内容" required>
+        <button type="submit">发送</button>
+    </form>
+
+    <h2>消息记录</h2>
+    <div>
+        {% for sender, receiver, content in messages %}
+            <div class="message">
+                <strong>{{ sender }}</strong> → <strong>{{ receiver }}</strong>: {{ content }}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
