@@ -1,0 +1,65 @@
+[
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "CMT1124-Test_2-2430_Q.pdf",
+    "type": "file",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  },
+  {
+    "sender": "alice",
+    "receiver": "bob",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 14:17:42"
+  }
+]

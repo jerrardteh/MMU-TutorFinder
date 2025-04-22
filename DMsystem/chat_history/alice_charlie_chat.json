@@ -1,0 +1,8 @@
+[
+  {
+    "sender": "alice",
+    "receiver": "charlie",
+    "content": "hi",
+    "type": "text"
+  }
+]

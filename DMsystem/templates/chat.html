@@ -2,36 +2,202 @@
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
-    <title>DM Chat System</title>
+    <title>{{ receiver }}</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        .message { margin-bottom: 10px; }
-        input, select { margin-bottom: 10px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: linear-gradient(to bottom right, #f0f2f5, #e4ebf1);
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            padding: 15px;
+            background-color: #ffffffcc;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #ddd;
+            font-size: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+
+        .message {
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .message.sent {
+            align-items: flex-start;
+        }
+
+        .message.received {
+            align-items: flex-end;
+        }
+
+        .content {
+            max-width: 70%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .message.sent .content {
+            background: #d4f8c5;
+            border-bottom-left-radius: 0;
+        }
+
+        .message.received .content {
+            background: #e1e9ff;
+            border-bottom-right-radius: 0;
+        }
+
+        .time {
+            font-size: 12px;
+            color: #888;
+            margin-top: 8px;
+            text-align: center;
+            position: absolute;
+            width: 100%;
+            bottom: -20px;
+        }
+
+        .message img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .message a {
+            color: #1976d2;
+            text-decoration: underline;
+        }
+
+        .message-input {
+            display: flex;
+            padding: 14px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -1px 4px rgba(0,0,0,0.05);
+        }
+
+        .message-input form {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .message-input input[type="text"] {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .message-input input[type="text"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .message-input input[type="file"] {
+            display: none;
+        }
+
+        .message-input label {
+            background-color: #f1f1f1;
+            padding: 10px 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .message-input label:hover {
+            background-color: #e0e0e0;
+        }
+
+        .message-input button {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .message-input button:hover {
+            background-color: #45a049;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 3px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <h1>📬 私聊系统</h1>
+    <h2>{{ sender }} 与 {{ receiver }} 的聊天</h2>
 
-    <form action="/register" method="POST">
-        <input type="text" name="username" placeholder="注册新用户" required>
-        <button type="submit">注册</button>
-    </form>
-
-    <h2>发送消息</h2>
-    <form method="POST">
-        <input type="text" name="sender" placeholder="发送者" required>
-        <input type="text" name="receiver" placeholder="接收者" required>
-        <input type="text" name="message" placeholder="消息内容" required>
-        <button type="submit">发送</button>
-    </form>
-
-    <h2>消息记录</h2>
-    <div>
-        {% for sender, receiver, content in messages %}
-            <div class="message">
-                <strong>{{ sender }}</strong> → <strong>{{ receiver }}</strong>: {{ content }}
+    <div class="messages">
+        {% for msg in messages %}
+            <div class="message {% if msg.sender == sender %}sent{% else %}received{% endif %}">
+                <div class="content">
+                    {% if msg.type == 'image' %}
+                        <img src="{{ url_for('uploaded_file', filename=msg.content) }}" alt="图片">
+                    {% elif msg.type == 'file' %}
+                        <a href="{{ url_for('uploaded_file', filename=msg.content) }}" download>{{ msg.content }}</a>
+                    {% else %}
+                        <p>{{ msg.content }}</p>
+                    {% endif %}
+                </div>
+                <div class="time">{{ msg.time }}</div>
             </div>
         {% endfor %}
+    </div>
+
+    <div class="message-input">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="message" placeholder="输入消息..." required>
+            <label for="file-upload">📎</label>
+            <input type="file" id="file-upload" name="file">
+            <button type="submit">发送</button>
+        </form>
     </div>
 </body>
 </html>
