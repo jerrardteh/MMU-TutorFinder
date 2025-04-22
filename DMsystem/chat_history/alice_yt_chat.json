@@ -1,0 +1,23 @@
+[
+  {
+    "sender": "alice",
+    "receiver": "yt",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 15:05:16"
+  },
+  {
+    "sender": "alice",
+    "receiver": "yt",
+    "content": "hi",
+    "type": "text",
+    "time": "2025-04-22 15:05:16"
+  },
+  {
+    "sender": "alice",
+    "receiver": "yt",
+    "content": "CMT1124-Test_2-2430_Q.pdf",
+    "type": "file",
+    "time": "2025-04-22 15:05:16"
+  }
+]

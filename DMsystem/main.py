@@ -7,8 +7,8 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Configure upload folder and chat history folder
-UPLOAD_FOLDER = 'static/uploads'
-CHAT_HISTORY_FOLDER = 'chat_history'
+UPLOAD_FOLDER = 'DMsystem/static/uploads'
+CHAT_HISTORY_FOLDER = 'DMsystem/chat_history'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(CHAT_HISTORY_FOLDER, exist_ok=True)

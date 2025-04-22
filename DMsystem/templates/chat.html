@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{{ receiver }}</title>
@@ -172,14 +172,14 @@
     </style>
 </head>
 <body>
-    <h2>{{ sender }} 与 {{ receiver }} 的聊天</h2>
+    <h2>{{ sender }} and {{ receiver }}'s Chat</h2>
 
     <div class="messages">
         {% for msg in messages %}
             <div class="message {% if msg.sender == sender %}sent{% else %}received{% endif %}">
                 <div class="content">
                     {% if msg.type == 'image' %}
-                        <img src="{{ url_for('uploaded_file', filename=msg.content) }}" alt="图片">
+                        <img src="{{ url_for('uploaded_file', filename=msg.content) }}" alt="Image">
                     {% elif msg.type == 'file' %}
                         <a href="{{ url_for('uploaded_file', filename=msg.content) }}" download>{{ msg.content }}</a>
                     {% else %}
@@ -193,10 +193,10 @@
 
     <div class="message-input">
         <form method="POST" enctype="multipart/form-data">
-            <input type="text" name="message" placeholder="输入消息..." required>
+            <input type="text" name="message" placeholder="Type a message..." required>
             <label for="file-upload">📎</label>
             <input type="file" id="file-upload" name="file">
-            <button type="submit">发送</button>
+            <button type="submit">Send</button>
         </form>
     </div>
 </body>
