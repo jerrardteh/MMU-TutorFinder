@@ -42,7 +42,16 @@ bytePassword = rawPassword.encode("utf-8")
 hashPassword = hashlib.sha256(bytePassword).hexdigest()
 
 mmuid = input("Enter your ID: ")
-email = input("Email (MUST END IN MMU.EDU.MY!): ")
+
+# Makes sure email ends in "mmu.edu.my"
+validEmail = 0
+while validEmail == 0:
+    email = input("Email (MUST END IN MMU.EDU.MY!): ")
+    smallEmail = email.lower()
+    if "mmu.edu.my" in smallEmail:
+        validEmail = 1
+
+
 role = input("Role: ")
 
 bio = input("Bio: ")
