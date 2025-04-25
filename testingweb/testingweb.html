@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutor Finder</title>
+  <link rel="stylesheet" href="testingweb.css">
+</head>
+<body>
+  <header>
+    <h1>Tutor Listings</h1>
+    <div class="filters">
+      <input type="search" id="searchInput" placeholder="Search tutors…" aria-label="Search tutors">
+      <select id="priceSelect" aria-label="Filter by price">
+        <option value="">All Prices</option>
+        <option value="low">Under $20</option>
+        <option value="mid">$20 – $50</option>
+        <option value="high">Above $50</option>
+      </select>
+      <select id="subjectSelect" aria-label="Filter by subject">
+        <option value="">All Subjects</option>
+        <option value="english">English</option>
+        <option value="math">Math</option>
+        <option value="science">Science</option>
+      </select>
+      <select id="timeSelect" aria-label="Filter by available time">
+        <option value="">Any Time</option>
+        <option value="morning">Morning</option>
+        <option value="afternoon">Afternoon</option>
+        <option value="evening">Evening</option>
+      </select>
+      <select id="sortSelect" aria-label="Sort tutors">
+        <option value="rating">Sort by Rating</option>
+        <option value="priceAsc">Price: Low to High</option>
+        <option value="priceDesc">Price: High to Low</option>
+      </select>
+      <label for="priceRange">Max Price:</label>
+      <input type="range" id="priceRange" min="10" max="200" step="10" value="200" aria-label="Maximum price range">
+    </div>
+  </header>
+  <main id="tutorContainer"></main>
+  <script src="testingweb.js"></script>
+</body>
+</html>
