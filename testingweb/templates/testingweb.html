@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tutor Finder</title>
-  <link rel="stylesheet" href="testingweb.css">
+  <title>Tutor Listings</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='testingweb.css') }}">
 </head>
 <body>
   <header>
@@ -14,7 +14,7 @@
       <select id="priceSelect" aria-label="Filter by price">
         <option value="">All Prices</option>
         <option value="low">Under $20</option>
-        <option value="mid">$20 – $50</option>
+        <option value="mid">$20–$50</option>
         <option value="high">Above $50</option>
       </select>
       <select id="subjectSelect" aria-label="Filter by subject">
@@ -29,16 +29,31 @@
         <option value="afternoon">Afternoon</option>
         <option value="evening">Evening</option>
       </select>
-      <select id="sortSelect" aria-label="Sort tutors">
-        <option value="rating">Sort by Rating</option>
-        <option value="priceAsc">Price: Low to High</option>
-        <option value="priceDesc">Price: High to Low</option>
-      </select>
-      <label for="priceRange">Max Price:</label>
-      <input type="range" id="priceRange" min="10" max="200" step="10" value="200" aria-label="Maximum price range">
     </div>
   </header>
-  <main id="tutorContainer"></main>
-  <script src="testingweb.js"></script>
+
+  <main id="tutorContainer">
+    {% for tutor in tutors %}
+    <div class="card" data-price="{{ 'low' if tutor.price < 20 else 'mid' if tutor.price <= 50 else 'high' }}"
+         data-subject="{{ tutor.subject }}" data-time="{{ tutor.time }}">
+      <img src="{{ tutor.img }}" alt="Photo of {{ tutor.name }}">
+      <div class="info">
+        <h3>{{ tutor.name }}</h3>
+        <p class="rating">
+          <a href="{{ url_for('reviews') }}?name={{ tutor.name|urlencode }}">★ {{ tutor.rating }}</a>
+        </p>
+        <p>Category: {{ tutor.category }}</p>
+        <p>Subject: {{ tutor.subject.capitalize() }}</p>
+        <p>Description: {{ tutor.description }}</p>
+        <p>Available: {{ tutor.time.capitalize() }}</p>
+        <p><em>{{ tutor.intro }}</em></p>
+        <div class="buttons">
+          <button>Book trial lesson</button>
+          <button>Send message</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </main>
 </body>
 </html>
