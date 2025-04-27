@@ -57,3 +57,13 @@
 .card .buttons button:hover {
   background-color: #0056b3;
 }
+#resetButton {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#resetButton:hover {
+  background-color: #3d3c3d85;
+}
