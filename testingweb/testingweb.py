@@ -1,6 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
 import os
+import sqlite3
+
+# Establish connection to database
+conn = sqlite3.connect('users.db', check_same_thread=False)
+cursor = conn.cursor()
 
 app = Flask(__name__)
 
@@ -66,27 +71,33 @@ def submit_review():
     rating = int(request.form['rating'])
     comment = request.form['comment']
 
-    new_review = {
-        "user": user,
-        "rating": rating,
-        "comment": comment
-    }
+    # Fetches student's database id
+    cursor.execute('SELECT id FROM USERS WHERE USERNAME = ?', (user,))
+    validId = cursor.fetchone()
+    id = validId[0]
+    studentid = str(id)
+    print(studentid)
+    
+    # Fetches tutor's database id
+    cursor.execute('SELECT id FROM USERS WHERE USERNAME = ?', (tutor_name,))
+    validId = cursor.fetchone()
+    id = validId[0]
+    tutorid = str(id)
+    print(tutorid)
+    
+    # Writes the review into the database 
+    cursor.execute('''INSERT INTO REVIEWS (studentid, tutorid, comment, stars) VALUES (?, ?, ?, ?)''', 
+                   (studentid, tutorid, comment, rating)
+                   )
+    
+    # Commits the changes
+    conn.commit()
 
     # Load existing reviews
     reviews_data = {}
     if os.path.exists(REVIEWS_FILE):
         with open(REVIEWS_FILE, 'r') as file:
             reviews_data = json.load(file)
-
-    # Add new review
-    if tutor_name not in reviews_data:
-        reviews_data[tutor_name] = []
-
-    reviews_data[tutor_name].append(new_review)
-
-    # Save back to file
-    with open(REVIEWS_FILE, 'w') as file:
-        json.dump(reviews_data, file, indent=2)
 
     return redirect(url_for('reviews', name=tutor_name))
 if __name__ == '__main__':
