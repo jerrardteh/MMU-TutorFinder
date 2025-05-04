@@ -57,11 +57,37 @@ def reviews():
     tutor_name = request.args.get('name', '')
     reviews_data = {}
 
-    if os.path.exists(REVIEWS_FILE):
-        with open(REVIEWS_FILE, 'r') as file:
-            reviews_data = json.load(file)
+    # if os.path.exists(REVIEWS_FILE):
+    #     with open(REVIEWS_FILE, 'r') as file:
+    #         reviews_data = json.load(file)
 
-    tutor_reviews = reviews_data.get(tutor_name, [])
+    cursor.execute('SELECT ID FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
+    tutor = cursor.fetchone()
+    tutorid = str(tutor[0])
+    print(tutorid)
+
+    cursor.execute('SELECT * FROM REVIEWS WHERE TUTORID = ?', (tutorid,))
+    review = cursor.fetchall()
+    print(review)
+
+    tutor_reviews = []
+    i = 0
+    for row in review:
+        reviews = review[i]
+        studentid = reviews[0]
+        cursor.execute('SELECT FULL_NAME FROM USERS WHERE ID = ?', (studentid,))
+        name = cursor.fetchone()
+        fullname = name[0]
+        print(fullname)
+
+        comment = reviews[2]
+        star = reviews[3]
+        jsonreview = {'user' : fullname, 'rating' : star, 'comment' : comment}
+        print (jsonreview)
+        tutor_reviews.append(jsonreview)
+        i = i + 1
+
+    # tutor_reviews = reviews_data.get(tutor_name, [])
     return render_template('reviews.html', tutor_name=tutor_name, reviews=tutor_reviews)
 
 @app.route('/submit_review', methods=['POST'])
@@ -72,14 +98,14 @@ def submit_review():
     comment = request.form['comment']
 
     # Fetches student's database id
-    cursor.execute('SELECT id FROM USERS WHERE USERNAME = ?', (user,))
+    cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (user,))
     validId = cursor.fetchone()
     id = validId[0]
     studentid = str(id)
     print(studentid)
     
     # Fetches tutor's database id
-    cursor.execute('SELECT id FROM USERS WHERE USERNAME = ?', (tutor_name,))
+    cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
     validId = cursor.fetchone()
     id = validId[0]
     tutorid = str(id)
