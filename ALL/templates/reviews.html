@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reviews for {{ tutor_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='testingweb.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Reviews for {{ tutor_name }}</h1>
+    <a href="/">← Back to Tutors</a>
+  </header>
+
+  <main id="reviewContainer">
+    {% if reviews %}
+      {% for review in reviews %}
+      <div class="card">
+        <div class="info">
+          <p><strong>{{ review.user }}</strong> rated <strong>★ {{ review.rating }}</strong></p>
+          <p>{{ review.comment }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No reviews yet. Be the first to review!</p>
+    {% endif %}
+    
+    <div class="card">
+      <h2>Leave a Review</h2>
+      <form method="POST" action="/submit_review">
+        <input type="hidden" name="tutor_name" value="{{ tutor_name }}">
+        <div>
+          <label>Your Name:</label><br>
+          <input type="text" name="user" required>
+        </div>
+        <div>
+          <label>Rating (1-5):</label><br>
+          <input type="number" name="rating" min="1" max="5" required>
+        </div>
+        <div>
+          <label>Comment:</label><br>
+          <textarea name="comment" rows="4" required></textarea>
+        </div>
+        <button type="submit">Submit Review</button>
+      </form>
+    </div>
+
+  </main>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ username }}'s Friends</title>
+    <style>
+        body {
+            font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(to bottom, #f0f2f5, #ffffff);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #222;
+            text-align: center;
+            margin: 0;
+            padding: 20px 0;
+            background: #ffffff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .friend-list {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .friend {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+        .friend:last-child {
+            border-bottom: none;
+        }
+        .friend:hover {
+            background-color: #f7f9fa;
+        }
+        .friend img {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-right: 18px;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .friend:hover img {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .friend a {
+            text-decoration: none;
+            color: #111;
+            font-size: 18px;
+            font-weight: 500;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+
+<h2>{{ username }}'s Friend List</h2>
+
+<div class="friend-list">
+    {% for friend in friends %}
+        <div class="friend" onclick="window.location.href='{{ url_for('chat', receiver=friend) }}'">
+            <img src="{{ url_for('static', filename='avatars/' + friend + '.png') }}" 
+                 alt="Avatar"
+                 onerror="this.onerror=null;this.src='{{ url_for('static', filename='avatars/default.png') }}';">
+            <a>{{ friend }}</a>
+        </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
