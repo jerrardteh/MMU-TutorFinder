@@ -20,13 +20,17 @@ def getstudents():
 
     i = 0
     lessons = []
-    cursor.execute('SELECT * FROM tutorsstudent WHERE tutorid = ?', (tutorid,))
+    cursor.execute('SELECT * FROM TUTORSSTUDENT WHERE tutorid = ?', (tutorid,))
     allstudents = cursor.fetchall()
+    cursor.execute('SELECT * FROM TUTORSSTUDENT WHERE tutorid = ?', (tutorid,))
     validstudents = cursor.fetchone()
+
+    print(allstudents)
+    print(validstudents)
 
     if validstudents is None:
         return 'No Lessons!'
-    else:
+    elif allstudents is not None:
         for row in allstudents:
             lesson = allstudents[i]
             studentid = lesson[0]
