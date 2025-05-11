@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Blueprint
 import json
 import os
 import sqlite3
@@ -7,7 +7,7 @@ import sqlite3
 conn = sqlite3.connect('users.db', check_same_thread=False)
 cursor = conn.cursor()
 
-app = Flask(__name__)
+app = Blueprint('studentview', __name__, template_folder='templates')
 
 # Load tutor data
 # tutors = [
@@ -66,7 +66,7 @@ for row in alltutors:
 
 
 @app.route('/')
-def index():
+def tutorlist():
     return render_template('testingweb.html', tutors=tutors)
 
 REVIEWS_FILE = os.path.join(os.path.dirname(__file__), 'reviews.json')
@@ -135,6 +135,6 @@ def submit_review():
         with open(REVIEWS_FILE, 'r') as file:
             reviews_data = json.load(file)
 
-    return redirect(url_for('reviews', name=tutor_name))
+    return redirect(url_for('studentview.reviews', name=tutor_name))
 if __name__ == '__main__':
     app.run(debug=True)

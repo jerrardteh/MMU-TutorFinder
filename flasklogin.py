@@ -1,9 +1,9 @@
-from flask import Flask, request, url_for, redirect, render_template, session
+from flask import Flask, request, url_for, redirect, render_template, session, Blueprint
 import sqlite3
 import hashlib
 
 # Setup Flask app
-app = Flask(__name__)
+app = Blueprint('login', __name__)
 app.secret_key = 'your_secret_key'  # Required for session management
 
 # Database connection function
@@ -18,7 +18,7 @@ def html():
     return render_template('flasklogin.html')  # No need to include 'templates/' in the path
 
 # Route to check validity of user
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         user = request.form['username']
@@ -36,19 +36,20 @@ def login():
 
         # If the user doesn't exist, redirect to invalid page
         if userResult is None:
-            return redirect(url_for('invalid_user'))
+            return redirect('invalid')
         else:
             correctHash = userResult['password_hash']
             role = userResult['role']
             
             # If password matches, store username in session and redirect to friends page
             if hashPassword == correctHash:
-                session['username'] = user  # Store the username in session
-                
-                # Redirect directly to friends list (on chat.py server)
-                return redirect('http://localhost:5001/friends')
+                session['username'] = user
+                if role == 'student':
+                    return redirect(url_for('studentview.tutorlist'))
+                elif role == 'tutor':
+                    return redirect(url_for('tutorview.getstudents'))
             else:
-                return redirect(url_for('invalid_user'))
+                return redirect('invalid')
 
     # If the method is GET, render the login form
     return render_template('flasklogin.html')
@@ -58,13 +59,13 @@ def login():
 def invalid_user():
     return 'Username or password is incorrect!'
 
-# The previous hello_user route is no longer needed for redirection, but can be kept without affecting functionality
-@app.route('/user/<user>/<role>')
-def hello_user(user, role):
-    if session.get('username') != user:
-        return redirect(url_for('login'))  # Redirect to login if session username does not match
+# # The previous hello_user route is no longer needed for redirection, but can be kept without affecting functionality
+# @app.route('/user/<user>/<role>')
+# def hello_user(user, role):
+#     if session.get('username') != user:
+#         return redirect(url_for('login'))  # Redirect to login if session username does not match
     
-    return f'Hello {role.capitalize()} {user}'
+#     return f'Hello {role.capitalize()} {user}'
 
 if __name__ == '__main__':
     app.run(debug=True)

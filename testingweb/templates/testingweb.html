@@ -38,14 +38,18 @@
   <main id="tutorContainer">
   {% for tutor in tutors %}
   <div class="card" 
-       data-price="{{ 'low' if tutor.price < 20 else 'mid' if tutor.price <= 50 else 'high' }}"
+       data-price="{% if tutor.price is not none %}
+        {{ 'low' if tutor.price < 20 else 'mid' if tutor.price <= 50 else 'high' }}
+       {% else %}
+        unknown
+       {% endif %}"
        data-subject="{{ tutor.subject }}" 
        data-time="{{ tutor.time }}">
     <img src="{{ tutor.img }}" alt="Photo of {{ tutor.name }}">
     <div class="info">
       <h3>{{ tutor.name }}</h3>
       <p class="rating">
-        <a href="{{ url_for('reviews') }}?name={{ tutor.name|urlencode }}">★ {{ tutor.rating }}</a>
+        <a href="{{ url_for('studentview.reviews') }}?name={{ tutor.name|urlencode }}">★ {{ tutor.rating }}</a>
       </p>
       <p>Category: {{ tutor.category }}</p>
       <p>Subject: {{ tutor.subject.capitalize() }}</p>
@@ -53,7 +57,11 @@
       <p>Available: {{ tutor.time.capitalize() }}</p>
       <p><em>{{ tutor.intro }}</em></p>
       <div class="buttons">
-        <button>Book trial lesson</button>
+        <form action="http://localhost:5000/booklesson/submit" method="POST">
+          <label for="tutorname">Time:</label>
+          <input type="text" name="time" id="time" required>
+          <button type="submit" name="tutorname" value="{{ tutor.name }}">Book trial lesson</button>
+        </form>
         <button>Send message</button>
       </div>
     </div>

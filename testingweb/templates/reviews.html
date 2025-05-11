@@ -9,7 +9,7 @@
 <body>
   <header>
     <h1>Reviews for {{ tutor_name }}</h1>
-    <a href="/">← Back to Tutors</a>
+    <a href="/studentview">← Back to Tutors</a>
   </header>
 
   <main id="reviewContainer">
@@ -28,7 +28,7 @@
     
     <div class="card">
       <h2>Leave a Review</h2>
-      <form method="POST" action="/submit_review">
+      <form method="POST" action="/studentview/submit_review">
         <input type="hidden" name="tutor_name" value="{{ tutor_name }}">
         <div>
           <label>Your Name:</label><br>
