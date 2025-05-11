@@ -1,83 +1,70 @@
-from flask import Flask, request, url_for, redirect, render_template
+from flask import Flask, request, url_for, redirect, render_template, session
 import sqlite3
 import hashlib
 
-# Establishes connection to database
-conn = sqlite3.connect('users.db', check_same_thread=False)
-cursor = conn.cursor()
-
+# Setup Flask app
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Required for session management
 
-# Link html file to flask
+# Database connection function
+def get_db_connection():
+    conn = sqlite3.connect('users.db')
+    conn.row_factory = sqlite3.Row  # Allows us to access columns by name
+    return conn
+
+# Link HTML file to Flask (login page)
 @app.route('/')
 def html():
+    return render_template('flasklogin.html')  # No need to include 'templates/' in the path
+
+# Route to check validity of user
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        user = request.form['username']
+        rawPassword = request.form['password']
+        bytePassword = rawPassword.encode('utf-8')
+        hashPassword = hashlib.sha256(bytePassword).hexdigest()
+
+        # Connect to the database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Get the hashed password and role from the database
+        cursor.execute("SELECT password_hash, role FROM Users WHERE username = ?", (user,))
+        userResult = cursor.fetchone()
+
+        # If the user doesn't exist, redirect to invalid page
+        if userResult is None:
+            return redirect(url_for('invalid_user'))
+        else:
+            correctHash = userResult['password_hash']
+            role = userResult['role']
+            
+            # If password matches, store username in session and redirect to friends page
+            if hashPassword == correctHash:
+                session['username'] = user  # Store the username in session
+                
+                # Redirect directly to friends list (on chat.py server)
+                return redirect('http://localhost:5001/friends')
+            else:
+                return redirect(url_for('invalid_user'))
+
+    # If the method is GET, render the login form
     return render_template('flasklogin.html')
 
-# Page for successful login as student
-@app.route('/user/<user>')
-def hello_student(user):
-    return 'Hello Student %s' %user
-
-# Page for successful login as tutor
-@app.route('/tutor/<user>')
-def hello_tutor(user):
-    return 'Hello Tutor %s' %user
-
-# Page for successful login as admin
-@app.route('/admin/<user>')
-def hello_admin(user):
-    return 'Hello Admin %s' %user
-
-# Page for successful logn as user (just in case role is not student, tutor or admin but account is valid)
-@app.route('/user/<user>')
-def hello_user(user):
-    return 'Hello %s' %user
-
-#Page for unsuccessful login
+# Page for unsuccessful login
 @app.route('/invalid')
 def invalid_user():
     return 'Username or password is incorrect!'
 
-# Page to check validity of user
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    user = request.form['username']
-    # Hashes the password to compare with stored hashed password in database
-    rawPassword = request.form['password']
-    bytePassword = rawPassword.encode('utf-8')
-    hashPassword = hashlib.sha256(bytePassword).hexdigest()
-    # Gets the hashed password and role of user from database
-    cursor.execute("SELECT password_hash, role FROM Users WHERE USERNAME = ?", (user,))
-    userResult = cursor.fetchone()
-    cursor.execute
-    if userResult is None:
-        return redirect(url_for('invalid_user'))
-    else:
-        correctHash = userResult[0]
-        role = userResult[1]
-        lowerRole = role.lower()
-        if hashPassword == correctHash:
-            if lowerRole == 'student':
-                return redirect(url_for('hello_student', user = user))
-            elif lowerRole == 'tutor':
-                return redirect(url_for('hello_tutor', user = user))
-            elif lowerRole == 'admin':
-                return redirect(url_for('hello_admin', user = user))
-            else:
-                return redirect(url_for('hello_user', user = user))
-        else:
-            return redirect(url_for('invalid_user'))
-
-
+# The previous hello_user route is no longer needed for redirection, but can be kept without affecting functionality
+@app.route('/user/<user>/<role>')
+def hello_user(user, role):
+    if session.get('username') != user:
+        return redirect(url_for('login'))  # Redirect to login if session username does not match
+    
+    return f'Hello {role.capitalize()} {user}'
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
-
-
-
-cursor.close()
-conn.close()
