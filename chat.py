@@ -7,7 +7,7 @@ from flask import redirect, url_for
 
 chat_bp = Blueprint('chat', __name__)
 
-# 初始化数据库表
+
 def init_db():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
@@ -24,10 +24,10 @@ def init_db():
     conn.commit()
     conn.close()
 
-# 初始化数据库
+
 init_db()
 
-# 加载聊天记录
+
 def load_history(sender, receiver):
     conn = sqlite3.connect('users.db')
     conn.row_factory = sqlite3.Row
@@ -41,7 +41,7 @@ def load_history(sender, receiver):
     conn.close()
     return [dict(row) for row in rows]
 
-# 保存消息
+
 def save_message(sender, receiver, content, msg_type):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     conn = sqlite3.connect('users.db')
@@ -95,5 +95,5 @@ def chat_route():
 
         save_message(sender, receiver, content, msg_type)
 
-        # ✅ 改成页面重定向
+        
         return redirect(url_for('chat.chat_route', sender=sender, receiver=receiver))
