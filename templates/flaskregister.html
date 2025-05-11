@@ -1,0 +1,39 @@
+<html>
+    <title>Register for MMU TutorFinder</title>
+    <body>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul style="color:red;">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        
+        <form action="http://localhost:5000/register" method="post">
+            <label for="fname">Full Name</label>
+            <input type="text" name="fullname" id="fname" required><br>
+            <label for="user">Username</label>
+            <input type="text" name="username" id="user" required><br>
+            <label for="pass">Password</label>
+            <input type="password" name="password" id="pass" required><br>
+            <label for="id">Student ID</label>
+            <input type="text" name="mmuid" id="id" required><br>
+            <label for="mail">Email</label>
+            <input type="email" name="email" id="mail" required><br>
+            <p>Role</p>
+            <input type="radio" id="student" name="role" value="student" required>
+            <label for="student">Student</label><br>
+            <input type="radio" id="tutor" name="role" value="tutor" required>
+            <label for="tutor">Tutor</label><br>
+            <input type="radio" id="admin" name="role" value="admin" required>
+            <label for="admin">Admin</label><br>
+            <label for="bio">Bio</label>
+            <textarea type="text" name="bio" id="bio"></textarea><br>
+            <label for="subject">Subjects (Seperate multiple subjects with a comma)</label>
+            <input type="text" name="subjects" id="subject"><br>
+            <input type="submit" value="submit">
+        </form>
+    </body>
+</html>
