@@ -23,8 +23,6 @@
         <option value="math">Math</option>
         <option value="science">Science</option>
       </select>
-
-
       <select id="timeSelect" aria-label="Filter by available time">
         <option value="">Any Time</option>
         <option value="morning">Morning</option>
@@ -36,38 +34,41 @@
   </header>
 
   <main id="tutorContainer">
-  {% for tutor in tutors %}
-  <div class="card" 
-       data-price="{% if tutor.price is not none %}
-        {{ 'low' if tutor.price < 20 else 'mid' if tutor.price <= 50 else 'high' }}
-       {% else %}
-        unknown
-       {% endif %}"
-       data-subject="{{ tutor.subject }}" 
-       data-time="{{ tutor.time }}">
-    <img src="{{ tutor.img }}" alt="Photo of {{ tutor.name }}">
-    <div class="info">
-      <h3>{{ tutor.name }}</h3>
-      <p class="rating">
-        <a href="{{ url_for('studentview.reviews') }}?name={{ tutor.name|urlencode }}">★ {{ tutor.rating }}</a>
-      </p>
-      <p>Category: {{ tutor.category }}</p>
-      <p>Subject: {{ tutor.subject.capitalize() }}</p>
-      <p>Description: {{ tutor.description }}</p>
-      <p>Available: {{ tutor.time.capitalize() }}</p>
-      <p><em>{{ tutor.intro }}</em></p>
-      <div class="buttons">
-        <form action="http://localhost:5000/booklesson/submit" method="POST">
-          <label for="tutorname">Time:</label>
-          <input type="text" name="time" id="time" required>
-          <button type="submit" name="tutorname" value="{{ tutor.name }}">Book trial lesson</button>
-        </form>
-        <button>Send message</button>
+    {% for tutor in tutors %}
+    <div class="card" 
+         data-price="{% if tutor.price is not none %}
+          {{ 'low' if tutor.price < 20 else 'mid' if tutor.price <= 50 else 'high' }}
+         {% else %}
+          unknown
+         {% endif %}"
+         data-subject="{{ tutor.subject|default('Unknown') }}" 
+         data-time="{{ tutor.time|default('Any Time') }}">
+      <img src="{{ tutor.img }}" alt="Photo of {{ tutor.name }}">
+      <div class="info">
+        <h3>{{ tutor.name }}</h3>
+        <p class="rating">
+          <a href="{{ url_for('studentview.reviews') }}?name={{ tutor.name|urlencode }}">★ {{ tutor.rating }}</a>
+        </p>
+        <p>Category: {{ tutor.category }}</p>
+        <p>Subject: {{ tutor.subject|default('Unknown')|capitalize }}</p>
+        <p>Description: {{ tutor.description }}</p>
+        <p>Available: {{ tutor.time|default('Any Time')|capitalize }}</p>
+        <p><em>{{ tutor.intro }}</em></p>
+        <div class="buttons">
+          <form action="{{ url_for('booklesson.booklesson') }}" method="POST">
+            <label for="tutorname">Time:</label>
+            <input type="text" name="time" id="time" required>
+            <button type="submit" name="tutorname" value="{{ tutor.name }}">Book trial lesson</button>
+          </form>
+          <a href="{{ url_for('chat.chat_route', receiver=tutor.name) }}">
+            <button>Send Message</button>
+          </a>
+        </div>
       </div>
     </div>
-  </div>
-  {% endfor %}
-</main>
+    {% endfor %}
+  </main>
+
   <script>
     const searchInput = document.getElementById('searchInput');
     const priceSelect = document.getElementById('priceSelect');
@@ -83,32 +84,28 @@
       timeSelect.value = '';
       filterTutors();
     });
-  
+
     function filterTutors() {
       const searchValue = searchInput.value.toLowerCase();
       const priceValue = priceSelect.value;
       const subjectValue = subjectSelect.value;
       const timeValue = timeSelect.value;
-  
+
       tutorCards.forEach(card => {
         const name = card.querySelector('h3').textContent.toLowerCase();
         const price = card.getAttribute('data-price');
         const subject = card.getAttribute('data-subject');
         const time = card.getAttribute('data-time');
-  
+
         const matchesSearch = name.includes(searchValue);
         const matchesPrice = !priceValue || price === priceValue;
         const matchesSubject = !subjectValue || subject === subjectValue;
         const matchesTime = !timeValue || time === timeValue;
-  
-        if (matchesSearch && matchesPrice && matchesSubject && matchesTime) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
+
+        card.style.display = (matchesSearch && matchesPrice && matchesSubject && matchesTime) ? 'flex' : 'none';
       });
     }
-  
+
     searchInput.addEventListener('input', filterTutors);
     priceSelect.addEventListener('change', filterTutors);
     subjectSelect.addEventListener('change', filterTutors);

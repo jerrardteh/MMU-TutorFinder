@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, render_template, session, redirect
 import sqlite3
 
+
 app = Blueprint('tutorview', __name__)
 app.secret_key = 'your_secret_key'
 

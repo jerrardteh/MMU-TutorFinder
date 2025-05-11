@@ -138,3 +138,4 @@ def submit_review():
     return redirect(url_for('studentview.reviews', name=tutor_name))
 if __name__ == '__main__':
     app.run(debug=True)
+    
