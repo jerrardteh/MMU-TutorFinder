@@ -57,7 +57,7 @@
         <p>Price: RM{{ tutor.price }}</p>
         <p>Description: <em>{{ tutor.intro }}</em></p>
         <div class="buttons">
-          <form action="{{ url_for('booklesson.booklesson') }}" method="POST">
+          <form action="http://localhost:5000/booklesson/submit" method="POST">
             <label for="time">Time:</label>
             <input type="text" name="time" id="time" required>
             <button type="submit" name="tutorname" value="{{ tutor.name }}">Book trial lesson</button>

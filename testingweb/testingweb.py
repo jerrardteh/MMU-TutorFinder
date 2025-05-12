@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, Blueprint
+from flask import Flask, render_template, request, redirect, url_for, Blueprint, session
 import json
 import os
 import sqlite3
@@ -103,12 +103,12 @@ def reviews():
 @app.route('/submit_review', methods=['POST'])
 def submit_review():
     tutor_name = request.form['tutor_name']
-    user = request.form['user']
+    user = session.get('username')
     rating = int(request.form['rating'])
     comment = request.form['comment']
 
     # Fetches student's database id
-    cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (user,))
+    cursor.execute('SELECT id FROM USERS WHERE username = ?', (user,))
     validId = cursor.fetchone()
     id = validId[0]
     studentid = str(id)
