@@ -1,0 +1,204 @@
+:root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #95a5a6;
+            --secondary-dark: #7f8c8d;
+            --text: #2c3e50;
+            --light-gray: #f5f7fa;
+            --border: #dfe6e9;
+            --error: #e74c3c;
+            --success: #2ecc71;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .registration-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .registration-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-button:hover {
+            text-decoration: underline;
+        }
+        
+        .registration-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .registration-form {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-option input {
+            margin-right: 10px;
+        }
+        
+        .btn {
+            display: inline-block;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            margin-top: 10px;
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+        }
+        
+        .button-group {
+            margin-top: 20px;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-messages ul {
+            list-style: none;
+            background-color: #fdecea;
+            border-left: 4px solid var(--error);
+            padding: 15px 20px;
+            border-radius: 4px;
+        }
+        
+        .flash-messages li {
+            color: var(--error);
+            margin: 5px 0;
+        }
+        
+        .form-note {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .registration-container {
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 0;
+            }
+            
+            .back-button {
+                position: static;
+                transform: none;
+                margin-bottom: 10px;
+                justify-content: center;
+            }
+            
+            .registration-header {
+                padding-top: 15px;
+                padding-bottom: 15px;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .registration-header h1 {
+                order: 2;
+                font-size: 1.5rem;
+            }
+        }

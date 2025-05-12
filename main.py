@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from flasklogin import app as login_bp
 from flaskregister import app as register_bp
 from testingweb.testingweb import app as studentview_bp
@@ -13,7 +13,7 @@ app.secret_key = 'your_secret_key'
 # Define the main route
 @app.route('/')
 def appfunc():
-    return render_template('main.html')
+    return redirect(url_for('login.html'))
 
 # Register Blueprints
 app.register_blueprint(login_bp, url_prefix='/login')

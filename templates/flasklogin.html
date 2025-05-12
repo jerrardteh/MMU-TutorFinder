@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html>
     <title>MMU TutorFinder Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <body>
-        <form action="http://localhost:5000/login" method="post">
-            <label for="user">Username:</label>
-            <p><input type="text" name="username" id="user" /></p>
-            <label for="pass">Password:</label>
-            <p><input type="password" name="password" id="pass" /></p>
-            <p><input type="submit" value="submit" /></p>
+    <div class="login-container">
+        <div class="login-title">Sign in</div>
+        <form class="login-form" action="http://localhost:5000/login" method="post">
+            <input type="text" name="username" class="form-input" placeholder="Username" required>
+            <input type="password" name="password" class="form-input" placeholder="Password" required>
+            
+            
+            <button type="submit" class="login-btn">Login</button>
+            
+        
         </form>
-    </body>
+        
+        <div class="switch-link">
+            Don't have an account? <a href="http://localhost:5000/register">Create an account</a>
+        </div>
+    </div>
+</body>
 </html>

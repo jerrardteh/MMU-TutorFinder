@@ -1,13 +1,31 @@
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between; /* Spreads out filter items and icon */
+  width: 100%;
+  padding: 10px;
 }
 
-.filters input,
-.filters select {
+/* This will group the filter items together */
+.filter-items {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Style the home icon */
+.home-icon {
+  font-size: 24px;
+  color: #007bff; /* Color of the icon */
+  transition: color 0.3s ease;
+}
+
+.home-icon:hover {
+  color: #0056b3; /* Change color on hover */
+  cursor: pointer;
+}
+.filter-items input,
+.filter-items select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -66,4 +84,32 @@
 
 #resetButton:hover {
   background-color: #3d3c3d85;
+}
+
+/* Styling the back to login button */
+.back-to-login-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px; /* Distance from the bottom of the page */
+  left: 20px;   /* Distance from the left of the page */
+  z-index: 999; /* Ensures the button stays on top of other content */
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.home-icon {
+  font-size: 24px;
+  color: #007bff; /* Color of the icon */
+  transition: color 0.3s ease;
+}
+
+.home-icon:hover {
+  color: #0056b3; /* Change color on hover */
+  cursor: pointer;
 }

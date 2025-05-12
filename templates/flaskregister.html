@@ -1,40 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register for MMU TutorFinder</title>
-    <body>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul style="color:red;">
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+<body>
+    <div class="registration-container">
+        <header class="registration-header">
+            <h1>Join MMU TutorFinder</h1>
+        </header>
         
-        <form action="http://localhost:5000/register/register" method="post">
-            <label for="fname">Full Name</label>
-            <input type="text" name="fullname" id="fname" required><br>
-            <label for="user">Username</label>
-            <input type="text" name="username" id="user" required><br>
-            <label for="pass">Password</label>
-            <input type="password" name="password" id="pass" required><br>
-            <label for="id">Student ID</label>
-            <input type="text" name="mmuid" id="id" required><br>
-            <label for="mail">Email</label>
-            <input type="email" name="email" id="mail" required><br>
-            <p>Role</p>
-            <input type="radio" id="student" name="role" value="student" required>
-            <label for="student">Student</label><br>
-            <input type="radio" id="tutor" name="role" value="tutor" required>
-            <label for="tutor">Tutor</label><br>
-            <input type="radio" id="admin" name="role" value="admin" required>
-            <label for="admin">Admin</label><br>
-            <label for="bio">Bio</label>
-            <textarea type="text" name="bio" id="bio"></textarea><br>
-            <label for="subject">Subjects (Seperate multiple subjects with a comma)</label>
-            <input type="text" name="subjects" id="subject"><br>
-            <input type="submit" value="submit">
-        </form>
-    </body>
+        <main class="registration-form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            {% endwith %}
+            
+            <form action="http://localhost:5000/register/register" method="post">
+                <div class="form-group">
+                    <label for="fname">Full Name</label>
+                    <input type="text" name="fullname" id="fname" class="form-control" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="user">Username</label>
+                    <input type="text" name="username" id="user" class="form-control" required placeholder="Choose a username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pass">Password</label>
+                    <input type="password" name="password" id="pass" class="form-control" required placeholder="Create a strong password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="id">Student ID</label>
+                    <input type="text" name="mmuid" id="id" class="form-control" required placeholder="Enter your MMU student ID">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mail">Email</label>
+                    <input type="email" name="email" id="mail" class="form-control" required placeholder="your.email@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label>Role</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="student" name="role" value="student" required>
+                            <label for="student">Student</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="tutor" name="role" value="tutor" required>
+                            <label for="tutor">Tutor</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="admin" name="role" value="admin" required>
+                            <label for="admin">Admin</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea name="bio" id="bio" class="form-control" placeholder="Tell us about yourself and your academic background"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subjects</label>
+                    <input type="text" name="subjects" id="subject" class="form-control" placeholder="Separate multiple subjects with commas (e.g., Math, Physics, Chemistry)">
+                    <p class="form-note">List the subjects you're interested in or can tutor</p>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                    <a href="http://localhost:5000/login" class="btn btn-secondary">Back to Login</a>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
 </html>
