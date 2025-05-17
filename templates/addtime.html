@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <form action="http://localhost:5000/addtime/submit" method="post">
+            <label for="day">Day</label>
+            <select name="day" id="day" required>
+                <option value="Sunday">Sunday</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+            </select>
+            <label for="time">Select a Time</label>
+            <input type="time" name="time" id="time" required>
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>

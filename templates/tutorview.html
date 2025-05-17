@@ -2,13 +2,18 @@
 <html>
     <link rel="stylesheet" href="{{ url_for('static', filename='tutorview.css') }}">
 <body>
-    <main id="studentContainer">
+    <!-- <main id="studentContainer">
     {% for lesson in lesson %}
     <div class="card">
         <div class="info">
             <p><strong>{{ lesson.studentname }}</strong> at <strong> {{ lesson.time }}</strong></p>
         </div>
     </div>
-    {% endfor %}
+    {% endfor %} -->
+
+
+    <a href="{{ url_for('addtime.html') }}">
+        <button>Add Time</button>
+    </a>
 </body>
 </html>

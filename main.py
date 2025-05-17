@@ -5,6 +5,7 @@ from testingweb.testingweb import app as studentview_bp
 from booklesson import app as booklesson_bp
 from tutorview import app as tutorview_bp
 from chat import chat_bp
+from addtime import app as addtime_bp
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -22,6 +23,8 @@ app.register_blueprint(register_bp, url_prefix='/register')
 app.register_blueprint(booklesson_bp, url_prefix='/booklesson')
 app.register_blueprint(tutorview_bp, url_prefix='/tutorview')
 app.register_blueprint(chat_bp, url_prefix='/chat')
+app.register_blueprint(addtime_bp, url_prefix='/addtime')
 
 if __name__ == '__main__':
     app.run(debug=True)
+  
