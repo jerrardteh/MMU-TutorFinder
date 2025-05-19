@@ -113,3 +113,14 @@
   color: #0056b3; /* Change color on hover */
   cursor: pointer;
 }
+
+#viewclass {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#viewclass:hover {
+  background-color: #3d3c3d85;
+}

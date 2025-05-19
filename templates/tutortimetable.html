@@ -1,13 +1,44 @@
 <!DOCTYPE html>
-<html>
-    <body>
-           <main id="studentContainer">
-    {% for classes in classes %}
-    <div class="card">
-        <div class="info">
-            <p><strong>{{ classes.studentname }}</strong> at <strong> {{ classes.time }}</strong> on <strong> {{ classes.day }}</strong></p>
-        </div>
-    </div>
-    {% endfor %} 
-    </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tutor Timetable</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='tutortimetable.css') }}">
+</head>
+<body>
+
+  <header>
+    <h1>Tutor Timetable</h1>
+  </header>
+
+  <main id="tutorContainer">
+    <table class="timetable">
+      <thead>
+        <tr>
+          <th>Student Name</th>
+          <th>Time</th>
+          <th>Day</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for classes in classes %}
+        <tr>
+          <td>{{ classes.studentname }}</td>
+          <td>{{ classes.time }}</td>
+          <td>{{ classes.day }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Back to Tutor View Button -->
+  <div class="back-button">
+    <a href="http://localhost:5000/tutorview/">
+      <button class="back-btn">Back to Tutor View</button>
+    </a>
+  </div>
+
+</body>
 </html>

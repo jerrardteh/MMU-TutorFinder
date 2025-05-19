@@ -1,16 +1,49 @@
 <!DOCTYPE html>
-<html>
-    <body>
-    <main id="studentContainer">
-    {% for lesson in lesson %}
-    <div class="card">
-        <div class="info">
-            <form action="http://localhost:5000/booklesson/submit" method="POST" >
-                <input type="hidden" name="tutorname" value="{{ tutorname }}">
-                <button value="{{ lesson.daytime }}" name="daytime">{{ lesson.daytime }}</button>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Book Lesson</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='booklesson.css') }}">
+</head>
+<body>
+
+  <header>
+    <h1>Book a Lesson with {{ tutorname }}</h1>
+  </header>
+
+  <main id="lessonContainer">
+    <table class="lesson-table">
+      <thead>
+        <tr>
+          <th>Available Lesson Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lesson in lesson %}
+        <tr>
+          <td>{{ lesson.daytime }}</td>
+          <td>
+            <form action="{{ url_for('booklesson.submit') }}" method="POST">
+              <input type="hidden" name="tutorname" value="{{ tutorname }}">
+              <button type="submit" value="{{ lesson.daytime }}" name="daytime" class="lesson-btn">
+                Book Lesson
+              </button>
             </form>
-        </div>
-    </div>
-    {% endfor %}
-    </body>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Back to Testing Web Button -->
+  <div class="back-button">
+    <a href="http://localhost:5000/studentview/">
+      <button class="back-btn">Back to Testing Web</button>
+    </a>
+  </div>
+
+</body>
 </html>
