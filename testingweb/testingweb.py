@@ -3,11 +3,13 @@ import json
 import os
 import sqlite3
 
-# Establish connection to database
-conn = sqlite3.connect('users.db', check_same_thread=False)
-cursor = conn.cursor()
+# Establishes connection to database
+def get_db_connection():
+    conn = sqlite3.connect('users.db', check_same_thread=False)
+    return conn, conn.cursor()
 
 app = Blueprint('studentview', __name__, template_folder='templates')
+app.secret_key = 'your_secret_key'
 
 # Load tutor data
 # tutors = [
@@ -46,6 +48,7 @@ app = Blueprint('studentview', __name__, template_folder='templates')
 #     }
 # ]
 
+conn, cursor = get_db_connection()
 cursor.execute('SELECT * FROM TUTORS')
 alltutors = cursor.fetchall()
 
@@ -136,6 +139,43 @@ def submit_review():
             reviews_data = json.load(file)
 
     return redirect(url_for('studentview.reviews', name=tutor_name))
+
+@app.route('/timetable')
+def studenttimetable():
+    studentusername = session.get('username')
+    cursor.execute('SELECT id FROM Users WHERE username = ?', (studentusername,))
+    studentrow = cursor.fetchone()
+    studentid = studentrow[0]
+
+    i = 0
+    classes = []
+    cursor.execute('SELECT * FROM tutortimetable WHERE studentid = ?', (studentid,))
+    alltutors = cursor.fetchall()
+    cursor.execute('SELECT * FROM tutortimetable WHERE studentid = ?', (studentid,))
+    validtutors = cursor.fetchone()
+
+    if validtutors is None:
+        return 'No Lessons!'
+    elif alltutors is not None:
+        for row in alltutors:
+            lesson = alltutors[i]
+            tutorid = lesson[2]
+            time = lesson[1]
+            day = lesson[0]
+            cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (tutorid,))
+            tutorrow = cursor.fetchone()
+            tutorname = tutorrow[0]
+            cursor.execute('SELECT subjects FROM tutors WHERE id = ?', (tutorid,))
+            subjectrow = cursor.fetchone()
+            subject = subjectrow[0]
+            jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subject}
+            classes.append(jsontutor)
+            i = i + 1
+
+    return render_template('studenttimetable.html', classes=classes)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
     

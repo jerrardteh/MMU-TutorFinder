@@ -6,6 +6,7 @@ from booklesson import app as booklesson_bp
 from tutorview import app as tutorview_bp
 from chat import chat_bp
 from addtime import app as addtime_bp
+from dropclasses import app as dropclasses_bp
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -24,6 +25,7 @@ app.register_blueprint(booklesson_bp, url_prefix='/booklesson')
 app.register_blueprint(tutorview_bp, url_prefix='/tutorview')
 app.register_blueprint(chat_bp, url_prefix='/chat')
 app.register_blueprint(addtime_bp, url_prefix='/addtime')
+app.register_blueprint(dropclasses_bp, url_prefix='/dropclasses')
 
 if __name__ == '__main__':
     app.run(debug=True)

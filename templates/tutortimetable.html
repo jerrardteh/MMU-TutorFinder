@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <body>
+           <main id="studentContainer">
+    {% for classes in classes %}
+    <div class="card">
+        <div class="info">
+            <p><strong>{{ classes.studentname }}</strong> at <strong> {{ classes.time }}</strong> on <strong> {{ classes.day }}</strong></p>
+        </div>
+    </div>
+    {% endfor %} 
+    </body>
+</html>
