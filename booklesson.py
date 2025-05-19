@@ -22,22 +22,26 @@ def html():
     studentid = '0'
     cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid = ?', (tutorid, studentid))
     availablelessons = cursor.fetchall()
+    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid = ?', (tutorid, studentid))
+    validlessons = cursor.fetchone()
 
-    lessons = []
-    jasontutorname = {'tutorname' : tutorname}
-    lessons.append(jasontutorname)
 
-    i = 0
-    for row in availablelessons:
-        lesson = availablelessons[i]
-        day = lesson[0]
-        time = lesson[1]
-        daytime = day + ' ' + time
-        jsonlessons = {'daytime' : daytime}
-        lessons.append(jsonlessons)
-        i = i + 1
+    if validlessons is None:
+        return('No Lessons!')
+    else:
+        lessons = []
+        i = 0
+        
+        for row in availablelessons:
+            lesson = availablelessons[i]
+            day = lesson[0]
+            time = lesson[1]
+            daytime = day + ' ' + time
+            jsonlessons = {'daytime' : daytime}
+            lessons.append(jsonlessons)
+            i = i + 1
 
-    return render_template('booklesson.html', lesson=lessons, tutorname=tutorname)
+        return render_template('booklesson.html', lesson=lessons, tutorname=tutorname)
 
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
