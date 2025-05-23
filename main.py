@@ -3,7 +3,7 @@ from flasklogin import app as login_bp
 from flaskregister import app as register_bp
 from testingweb.testingweb import app as studentview_bp
 from booklesson import app as booklesson_bp
-from tutorview import app as tutorview_bp
+from tutorview import tutorview  
 from chat import chat_bp
 from addtime import app as addtime_bp
 from dropclasses import app as dropclasses_bp
@@ -22,11 +22,10 @@ app.register_blueprint(login_bp, url_prefix='/login')
 app.register_blueprint(studentview_bp, url_prefix='/studentview')
 app.register_blueprint(register_bp, url_prefix='/register')
 app.register_blueprint(booklesson_bp, url_prefix='/booklesson')
-app.register_blueprint(tutorview_bp, url_prefix='/tutorview')
+app.register_blueprint(tutorview, url_prefix='/tutorview')
 app.register_blueprint(chat_bp, url_prefix='/chat')
 app.register_blueprint(addtime_bp, url_prefix='/addtime')
 app.register_blueprint(dropclasses_bp, url_prefix='/dropclasses')
 
 if __name__ == '__main__':
     app.run(debug=True)
-  

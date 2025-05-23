@@ -24,7 +24,7 @@
                 {% endif %}
             {% endwith %}
             
-            <form action="http://localhost:5000/register/register" method="post">
+            <form action="/register/register" method="post">
                 <div class="form-group">
                     <label for="fname">Full Name</label>
                     <input type="text" name="fullname" id="fname" class="form-control" required placeholder="Enter your full name">
@@ -81,7 +81,7 @@
                 
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Create Account</button>
-                    <a href="http://localhost:5000/login" class="btn btn-secondary">Back to Login</a>
+                    <a href="/login" class="btn btn-secondary">Back to Login</a>
                 </div>
             </form>
         </main>

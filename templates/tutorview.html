@@ -1,16 +1,111 @@
 <!DOCTYPE html>
 <html>
-    <link rel="stylesheet" href="{{ url_for('static', filename='tutorview.css') }}">
+<head>
+    <title>Tutor Chat</title>
+    <style>
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-right: 1px solid #ccc;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .student-name {
+            cursor: pointer;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .student-name:hover {
+            background-color: #e0e0e0;
+        }
+        .chat-panel {
+            flex-grow: 1;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .sender {
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
 
+<div class="sidebar">
+    <h3>Student List</h3>
+    {% for lesson in lessons %}
+        <div class="student-name" onclick="openChat('{{ lesson.studentname }}')">
+            {{ lesson.studentname }}<br>
+            <small>{{ lesson.time }}</small>
+        </div>
+    {% endfor %}
+</div>
 
+<div class="chat-panel" id="chat-panel">
+    <h3>Select a student to start chatting</h3>
+</div>
 
-    <a href="{{ url_for('addtime.html') }}">
-        <button>Add Time</button>
-    </a>
+<script>
+    const lessons = {{ lessons | tojson }};
+    // 从URL参数中获取选中的学生名，如果有，直接打开聊天
+    function getUrlParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+    const selectedStudent = getUrlParam('selected_student');
 
-    <a href="{{ url_for('tutorview.tutortimetable') }}">
-        <button>See Timetable</button>
-    </a>
+    function openChat(studentname) {
+        const lesson = lessons.find(l => l.studentname === studentname);
+        if (!lesson) return;
+
+        let chatHTML = `<h3>Chat with ${lesson.studentname}</h3>`;
+        chatHTML += `<div><strong>Lesson Time:</strong> ${lesson.time || 'No lesson'}</div><hr>`;
+
+        if (lesson.messages.length > 0) {
+            lesson.messages.forEach(msg => {
+                chatHTML += `<div class="message"><span class="sender">${msg.sender}</span> to <span class="receiver">${msg.receiver}</span>: `;
+                if (msg.type === 'image') {
+                    chatHTML += `<img src="/static/${msg.content}" alt="Image" style="max-width: 200px;">`;
+                } else if (msg.type === 'video') {
+                    chatHTML += `<video controls width="300"><source src="/static/${msg.content}" type="video/mp4"></video>`;
+                } else if (msg.type === 'file') {
+                    chatHTML += `<a href="/static/${msg.content}" download>${msg.content.split('/').pop()}</a>`;
+                } else {
+                    chatHTML += msg.content;
+                }
+                chatHTML += ` <small>(${msg.timestamp})</small></div>`;
+            });
+        } else {
+            chatHTML += `<p>No messages yet.</p>`;
+        }
+
+        chatHTML += `
+            <hr>
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('tutorview.send_message') }}">
+                <input type="hidden" name="studentname" value="${lesson.studentname}">
+                <input type="text" name="message" placeholder="Type a message..." required>
+                <input type="file" name="image" accept="image/*">
+                <input type="file" name="file">
+                <input type="file" name="video" accept="video/*">
+                <button type="submit">Send</button>
+            </form>
+        `;
+
+        document.getElementById('chat-panel').innerHTML = chatHTML;
+    }
+
+    if (selectedStudent) {
+        openChat(selectedStudent);
+    }
+</script>
+
 </body>
 </html>

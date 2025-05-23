@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>{{ receiver }}</title>
     <style>
         * {
@@ -78,6 +78,8 @@
             line-height: 1.6;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             position: relative;
+            word-break: break-word;
+            white-space: pre-wrap;
         }
 
         .message.sent .content {
@@ -151,6 +153,9 @@
             padding: 10px 14px;
             border-radius: 50%;
             cursor: pointer;
+            user-select: none;
+            font-size: 18px;
+            line-height: 1;
         }
 
         .message-input button {
@@ -161,6 +166,7 @@
             border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
+            user-select: none;
         }
 
         .messages::-webkit-scrollbar {
@@ -175,43 +181,44 @@
 </head>
 <body>
 
+<a href="/studentview/" class="back-button">← Back</a>
+
+<h2>{{ sender }} and {{ receiver }}'s Chat</h2>
     
-    <a href="http://localhost:5000/studentview/" class="back-button">← Back</a>
-
-    <h2>{{ sender }} and {{ receiver }}'s Chat</h2>
-
-    <div class="messages">
-        {% for msg in messages %}
-            <div class="message {% if msg.sender == sender %}sent{% else %}received{% endif %}">
-                <div class="content">
-                    {% if msg.type == 'image' %}
-                        <img src="{{ url_for('uploaded_file', filename=msg.content) }}" alt="Image">
-                    {% elif msg.type == 'file' %}
-                        <a href="{{ url_for('uploaded_file', filename=msg.content) }}" download>{{ msg.content }}</a>
-                    {% elif msg.type == 'video' %}
-                        <video controls>
-                            <source src="{{ url_for('uploaded_file', filename=msg.content) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    {% else %}
-                        <p>{{ msg.content }}</p>
-                    {% endif %}
-                </div>
-                <div class="time">{{ msg.timestamp }}</div>
+<div class="messages" id="messages">
+    {% for msg in messages %}
+        <div class="message {% if msg.sender == sender %}sent{% else %}received{% endif %}">
+            <div class="content">
+                {% if msg.type == 'image' %}
+                    <img src="{{ url_for('static', filename=msg.content) }}" alt="Image" />
+                {% elif msg.type == 'file' %}
+                    <a href="{{ url_for('static', filename=msg.content) }}" download>{{ msg.content.split('/')[-1] }}</a>
+                {% elif msg.type == 'video' %}
+                    <video controls>
+                        <source src="{{ url_for('static', filename=msg.content) }}" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                {% else %}
+                    <p>{{ msg.content }}</p>
+                {% endif %}
             </div>
-        {% endfor %}
-    </div>
+            <div class="time">{{ msg.timestamp }}</div>
+        </div>
+    {% endfor %}
+</div>
 
-    <div class="message-input">
-        <form method="POST" enctype="multipart/form-data">
-            <input type="text" name="message" placeholder="Type a message...">
-            <label for="file-upload">📎</label>
-            <input type="file" id="file-upload" name="file">
-            <label for="video-upload">🎥</label>
-            <input type="file" id="video-upload" name="video" accept="video/*">
-            <button type="submit">Send</button>
-        </form>
-    </div>
+<div class="message-input">
+    <form method="POST" enctype="multipart/form-data">
+        <input type="text" name="message" placeholder="Type a message..." autocomplete="off" />
+        <label for="image-upload" title="Send Image">🖼️</label>
+        <input type="file" id="image-upload" name="image" accept="image/*" />
+        <label for="file-upload" title="Send File">📎</label>
+        <input type="file" id="file-upload" name="file" />
+        <label for="video-upload" title="Send Video">🎥</label>
+        <input type="file" id="video-upload" name="video" accept="video/*" />
+        <button type="submit">Send</button>
+    </form>
+</div>
 
 </body>
 </html>

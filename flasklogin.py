@@ -47,7 +47,7 @@ def login():
                 if role == 'student':
                     return redirect(url_for('studentview.tutorlist'))
                 elif role == 'tutor':
-                    return redirect(url_for('tutorview.tutorview'))
+                    return redirect(url_for('tutorview.getstudents'))
             else:
                 return redirect('invalid')
 
