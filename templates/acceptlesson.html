@@ -1,13 +1,116 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        {% for lessons in lessons %}
-        <form action="{{ url_for('tutorview.submitacceptlesson') }}" method="POST">
-            <input type="hidden" value="{{ lessons.day }}" name="day">
-            <input type="hidden" value="{{ lessons.time }}" name="time">
-            <input type="hidden" value="{{ lessons.studentname }}" name="studentname">
-            <button type="submit">{{ lessons.day }} at {{ lessons.time }} with {{ lessons.studentname }}</button>
-        </form>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accept Lessons</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='tutortimetable.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #2C3E50;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+    #lessonContainer {
+      padding: 20px;
+    }
+    .timetable {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+    .timetable th, .timetable td {
+      padding: 15px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    .timetable th {
+      background-color: #34495E;
+      color: white;
+    }
+    .timetable tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .timetable tr:hover {
+      background-color: #e0e0e0;
+    }
+    .back-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back-btn {
+      background-color: #E67E22;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .back-btn:hover {
+      background-color: #D35400;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #16A085;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #1ABC9C;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Accept Lessons</h1>
+  </header>
+
+  <main id="lessonContainer">
+    <table class="timetable">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Time</th>
+          <th>Student Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lesson in lessons %}
+        <tr>
+          <td>{{ lesson.day }}</td>
+          <td>{{ lesson.time }}</td>
+          <td>{{ lesson.studentname }}</td>
+          <td>
+            <form action="{{ url_for('tutorview.submitacceptlesson') }}" method="POST">
+              <input type="hidden" value="{{ lesson.day }}" name="day">
+              <input type="hidden" value="{{ lesson.time }}" name="time">
+              <input type="hidden" value="{{ lesson.studentname }}" name="studentname">
+              <button type="submit">Accept</button>
+            </form>
+          </td>
+        </tr>
         {% endfor %}
-    </body>
+      </tbody>
+    </table>
+  </main>
+
+  <div class="back-button">
+    <a href="/tutorview/">
+      <button class="back-btn">Back to Tutor View</button>
+    </a>
+  </div>
+
+</body>
 </html>

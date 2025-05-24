@@ -1,0 +1,136 @@
+/* General Layout */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+
+/* Header Styling */
+header {
+    background-color: #4CAF50; /* Vibrant Green */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin: 0;
+}
+
+.navigation {
+    margin-top: 10px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    font-size: 1.1em;
+    font-weight: 500;
+    padding: 10px 20px;
+    background-color: #333;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin: 0 10px;
+}
+
+.nav-link:hover {
+    background-color: #555;
+}
+
+/* Main Content Styling */
+main#lessonContainer {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Lesson Card */
+.lesson-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.lesson-info {
+    width: 100%;
+}
+
+.lesson-info h2 {
+    margin-top: 0;
+    font-size: 1.8em;
+    color: #333;
+}
+
+.lesson-info p {
+    font-size: 1.1em;
+    color: #555;
+    margin: 10px 0;
+}
+
+.lesson-buttons {
+    margin-top: 15px;
+}
+
+.accept-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.accept-btn:hover {
+    background-color: #218838;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .nav-links {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .lesson-card {
+        padding: 15px;
+    }
+
+    .lesson-info h2 {
+        font-size: 1.5em;
+    }
+}

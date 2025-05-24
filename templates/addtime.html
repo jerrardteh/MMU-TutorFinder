@@ -1,30 +1,120 @@
 <!DOCTYPE html>
-<html>
-    <body>
-            <main id="studentContainer">
-    {% for daytime in daytime %}
-    <div class="card">
-        <div class="info">
-            <p><strong>{{ daytime.day }}</strong> at <strong> {{ daytime.time }}</strong></p>
-        </div>
-    </div>
-    {% endfor %} 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Time</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='addtime.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
 
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            text-align: left;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        select:focus, button:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .flash-messages {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ffdddd;
+            color: #d8000c;
+            border: 1px solid #d8000c;
+            border-radius: 5px;
+            display: none; /* Hidden by default, can be shown with JavaScript */
+        }
+
+        .flash-messages ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .flash-messages li {
+            margin: 5px 0;
+        }
+
+        /* Make form elements responsive */
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Add Time for Tutor</h1>
+        
+        <form action="/addtime/submit" method="post">
             <div class="flash-messages">
                 <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <li>{{ message }}</li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
                 </ul>
             </div>
-            {% endif %}
-        {% endwith %}
 
-
-        <form action="/addtime/submit" method="post">
             <label for="day">Day</label>
             <select name="day" id="day" required>
                 <option value="Sunday">Sunday</option>
@@ -35,14 +125,19 @@
                 <option value="Friday">Friday</option>
                 <option value="Saturday">Saturday</option>
             </select>
+
             <label for="time">Select a Time</label>
             <select name="time">
                 {% for hour in range(24) %}
-                <option value="{{ '{:02d}:00'.format(hour) }}">{{ '{:02d}:00'.format(hour) }}</option>
-                <option value="{{ '{:02d}:30'.format(hour) }}">{{ '{:02d}:30'.format(hour) }}</option>
+                    <option value="{{ '{:02d}:00'.format(hour) }}">{{ '{:02d}:00'.format(hour) }}</option>
+                    <option value="{{ '{:02d}:30'.format(hour) }}">{{ '{:02d}:30'.format(hour) }}</option>
                 {% endfor %}
             </select>
+
             <button type="submit">Submit</button>
         </form>
-    </body>
+        <a href="http://localhost:5000/tutorview/" class="back-btn">Back to Tutor View</a>
+    </div>
+    
+</body>
 </html>
