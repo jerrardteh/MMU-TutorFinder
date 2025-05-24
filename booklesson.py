@@ -73,7 +73,7 @@ def html():
     cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid = ?', (tutorid, studentid))
     availablelessons = cursor.fetchall()
 
-    lessons = [{'tutorname': tutorname}]
+    lessons = []
     for lesson in availablelessons:
         day, time = lesson[0], lesson[1]
         lessons.append({'daytime': f"{day} {time}"})

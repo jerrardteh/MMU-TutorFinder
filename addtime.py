@@ -43,17 +43,18 @@ def addtime():
         tutorrow = cursor.fetchone()
         tutorid = tutorrow[0]
         studentid = '0'
+        accepted = '0'
         
         cursor.execute('SELECT * FROM tutortimetable WHERE day = ? AND time = ? AND tutorid = ?', (day, time, tutorid))
         existing = cursor.fetchone()
         if existing is None:
-            cursor.execute('INSERT INTO tutortimetable (tutorid, day, time, studentid) VALUES (?, ?, ?, ?)', (tutorid, day, time, studentid))
+            cursor.execute('INSERT INTO tutortimetable (tutorid, day, time, studentid, accepted) VALUES (?, ?, ?, ?, ?)', (tutorid, day, time, studentid, accepted,))
             conn.commit()
         else:
             flash('You already have a class at this time!')
             return redirect(url_for('addtime.addtime'))
         
-    return(redirect('/addtime'))
+    return redirect('/addtime')
 
 
 if __name__ == '__main__':

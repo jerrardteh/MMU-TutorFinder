@@ -162,13 +162,22 @@ def studenttimetable():
             tutorid = lesson[2]
             time = lesson[1]
             day = lesson[0]
+
+            accepted = lesson[4]
+            if accepted == 0:
+                acceptedmessage = 'Pending acceptance from tutor'
+            elif accepted == 1:
+                acceptedmessage = 'Tutor has accepted your class'
+            else:
+                acceptedmessage = 'Acceptance status unknown'
+
             cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (tutorid,))
             tutorrow = cursor.fetchone()
             tutorname = tutorrow[0]
             cursor.execute('SELECT subjects FROM tutors WHERE id = ?', (tutorid,))
             subjectrow = cursor.fetchone()
             subject = subjectrow[0]
-            jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subject}
+            jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subject, 'acceptance' : acceptedmessage}
             classes.append(jsontutor)
             i = i + 1
 

@@ -25,9 +25,11 @@
       <tbody>
         {% for classes in classes %}
         <tr>
-          <td>{{ classes.studentname }}</td>
+          <td>{{ classes.tutorname }}</td>
           <td>{{ classes.time }}</td>
           <td>{{ classes.day }}</td>
+          <td>{{ classes.subject }}</td>
+          <td>{{ classes.acceptance }}</td>
           <td>
             <form action="{{ url_for('droplesson.dropclasses') }}" method="POST">
               <input type="hidden" name="droptutorname" value="{{ classes.tutorname }}">

@@ -26,6 +26,9 @@ def dropclasses():
         tutorrow = cursor.fetchone()
         tutorid = tutorrow[0]
 
+        cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, tutorid, day, time, studentid,))
+        conn.commit()
+
         cursor.execute('UPDATE tutortimetable SET studentid = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, tutorid, day, time, studentid,))
         conn.commit()
 

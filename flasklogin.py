@@ -48,6 +48,8 @@ def login():
                     return redirect(url_for('studentview.tutorlist'))
                 elif role == 'tutor':
                     return redirect(url_for('tutorview.getstudents'))
+                elif role == 'admin':
+                    return redirect(url_for('adminview.html'))
             else:
                 return redirect('invalid')
 

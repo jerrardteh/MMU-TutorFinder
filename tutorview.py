@@ -12,6 +12,10 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def db_connection():
+    conn = sqlite3.connect('users.db', check_same_thread=False)
+    return conn, conn.cursor()
+
 def save_file(file, folder):
     file_ext = file.filename.rsplit('.', 1)[-1]
     unique_filename = f"{uuid.uuid4().hex}.{file_ext}"
@@ -131,4 +135,99 @@ def send_message():
 
     # 发送完消息后重定向回聊天页面（带学生名字参数，实现不跳回默认页面）
     return redirect(url_for('tutorview.getstudents', selected_student=studentname))
+
+@tutorview.route('/viewtimetable')
+def tutortimetable():
+    conn, cursor = db_connection()
+
+    tutorusername = session.get('username')
+    cursor.execute('SELECT id FROM Users WHERE username = ?', (tutorusername,))
+    tutorrow = cursor.fetchone()
+    tutorid = tutorrow[0]
+
+    i = 0
+    classes = []
+    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0', (tutorid,))
+    allstudents = cursor.fetchall()
+    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0', (tutorid,))
+    validstudents = cursor.fetchone()
+
+    if validstudents is None:
+        return 'No Lessons!'
+    elif allstudents is not None:
+        for row in allstudents:
+            lesson = allstudents[i]
+            studentid = lesson[3]
+            time = lesson[1]
+            day = lesson[0]
+            cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (studentid,))
+            studentrow = cursor.fetchone()
+            studentname = studentrow[0]
+            jsonstudent = {'studentname' : studentname, 'time' : time, 'day' : day}
+            classes.append(jsonstudent)
+            i = i + 1
+
+    return render_template('tutortimetable.html', classes=classes)
+
+@tutorview.route('/acceptlesson')
+def acceptlesson():
+    conn, cursor = db_connection()
+
+    tutorusername = session.get('username')
+    cursor.execute('SELECT id FROM Users WHERE username = ?', (tutorusername,))
+    tutorrow = cursor.fetchone()
+    tutorid = tutorrow[0]
+
+    unaccepted = '0'
+    notstudentid = '0'
+    cursor.execute('SELECT * FROM tutortimetable WHERE accepted = ? AND studentid != ?', (unaccepted, notstudentid))
+    alllessons = cursor.fetchall()
+    cursor.execute('SELECT * FROM tutortimetable WHERE accepted = ? AND studentid != ?', (unaccepted, notstudentid))
+    validlessons = cursor.fetchone()
+
+    i = 0
+    lessons = []
+    if validlessons is None:
+        return 'No lessons to accept!'
+    elif alllessons is not None:
+        for row in alllessons:
+            lesson = alllessons[i]
+            # Get day and time information
+            day = lesson[0]
+            time = lesson[1]
+
+            # Get student name
+            studentid = lesson[3]
+            cursor.execute('SELECT full_name FROM Users WHERE id = ?', (studentid,))
+            studentrow = cursor.fetchone()
+            studentname = studentrow[0]
+
+            # Append in json format to pass to html
+            jsonlesson = {'day' : day, 'time' : time, 'studentname' : studentname}
+            lessons.append(jsonlesson)
+            i = i + 1
+    
+    return render_template('acceptlesson.html', lessons=lessons)
+
+@tutorview.route('/acceptlesson/submit', methods=['GET', 'POST'])
+def submitacceptlesson():
+    if request.method == 'POST':
+        conn, cursor = db_connection()
+
+        # Get day, time and student name to be accepted
+        day = request.form['day']
+        time = request.form['time']
+        studentname = request.form['studentname']\
+        
+        #Find student's id
+        cursor.execute('SELECT id FROM Users WHERE full_name = ?', (studentname,))
+        studentrow = cursor.fetchone()
+        studentid = studentrow[0]
+
+        # Change the accepted value in database
+        acceptedvalue = '1'
+        cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE day = ? AND time = ? AND studentid =?', (acceptedvalue, day, time, studentid,))
+        conn.commit()
+        
+    return redirect(url_for('tutorview.acceptlesson'))
 

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        {% for lessons in lessons %}
+        <form action="{{ url_for('tutorview.submitacceptlesson') }}" method="POST">
+            <input type="hidden" value="{{ lessons.day }}" name="day">
+            <input type="hidden" value="{{ lessons.time }}" name="time">
+            <input type="hidden" value="{{ lessons.studentname }}" name="studentname">
+            <button type="submit">{{ lessons.day }} at {{ lessons.time }} with {{ lessons.studentname }}</button>
+        </form>
+        {% endfor %}
+    </body>
+</html>

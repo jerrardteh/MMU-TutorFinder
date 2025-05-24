@@ -3,6 +3,20 @@
     <title>MMU TutorFinder Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
     <body>
+
+    <main class="registration-form">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="flash-messages">
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endwith %}
+
     <div class="login-container">
         <div class="login-title">Sign in</div>
         <form class="login-form" action="/login" method="post">

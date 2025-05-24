@@ -61,10 +61,6 @@
                             <input type="radio" id="tutor" name="role" value="tutor" required>
                             <label for="tutor">Tutor</label>
                         </div>
-                        <div class="radio-option">
-                            <input type="radio" id="admin" name="role" value="admin" required>
-                            <label for="admin">Admin</label>
-                        </div>
                     </div>
                 </div>
                 
@@ -75,8 +71,11 @@
                 
                 <div class="form-group">
                     <label for="subject">Subjects</label>
-                    <input type="text" name="subjects" id="subject" class="form-control" placeholder="Separate multiple subjects with commas (e.g., Math, Physics, Chemistry)">
-                    <p class="form-note">List the subjects you're interested in or can tutor</p>
+                    <select name="subject">
+                        {% for subjects in subjects %}
+                        <option value="{{ subjects.code }}">{{ subjects.semester }} {{subjects.code}} {{subjects.name}}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 
                 <div class="button-group">

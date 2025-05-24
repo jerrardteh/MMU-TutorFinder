@@ -48,6 +48,18 @@
         </div>
     {% endfor %}
 </div>
+ 
+<div>
+    <a href="{{ url_for('addtime.html') }}">
+        <button>Add Time</button>
+    </a>
+    <a href="{{ url_for('tutorview.tutortimetable') }}">
+        <button>Timetable</button>
+    </a>
+    <a href="{{ url_for('tutorview.acceptlesson') }}">
+        <button>Accept Lessons</button>
+    </a>
+</div>
 
 <div class="chat-panel" id="chat-panel">
     <h3>Select a student to start chatting</h3>

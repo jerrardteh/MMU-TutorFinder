@@ -36,7 +36,12 @@
                 <option value="Saturday">Saturday</option>
             </select>
             <label for="time">Select a Time</label>
-            <input type="time" name="time" id="time" required>
+            <select name="time">
+                {% for hour in range(24) %}
+                <option value="{{ '{:02d}:00'.format(hour) }}">{{ '{:02d}:00'.format(hour) }}</option>
+                <option value="{{ '{:02d}:30'.format(hour) }}">{{ '{:02d}:30'.format(hour) }}</option>
+                {% endfor %}
+            </select>
             <button type="submit">Submit</button>
         </form>
     </body>
