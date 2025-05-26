@@ -1,143 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tutor Chat</title>
-    <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tutor Chat</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        min-height: 100vh;
+        background-color: #f0f2f5;
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+        width: 250px;
+        background-color: #fff;
+        padding: 15px;
+        border-right: 2px solid #ccc;
+        height: 100vh;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sidebar h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .student-name {
+        cursor: pointer;
+        padding: 10px 12px;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.3s ease;
+        color: #444;
+        font-weight: 600;
+    }
+
+    .student-name:hover, .student-name.active {
+        background-color: #e6f7ff;
+        color: #1890ff;
+    }
+
+    /* Main Content Panel */
+    .main-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 20px 30px;
+        background-color: #fff;
+        overflow-y: auto;
+    }
+
+    /* Button Container */
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        padding: 12px 25px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s ease-in-out;
+        text-decoration: none;
+    }
+
+    .action-btn:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+    }
+
+    .action-btn:active {
+        background-color: #397d3a;
+    }
+
+    /* Chat Panel */
+    .chat-panel {
+        flex-grow: 1;
+        padding: 20px;
+        height: 70vh;
+        overflow-y: auto;
+        background-color: #fafafa;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        color: #333;
+    }
+
+    .chat-panel h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 8px;
+        color: #1890ff;
+    }
+
+    .message {
+        margin-bottom: 15px;
+        padding: 10px;
+        background: #fff;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .message .sender {
+        font-weight: 700;
+        color: #0b6cff;
+    }
+
+    .message .receiver {
+        font-weight: 700;
+        color: #ff5722;
+    }
+
+    .message small {
+        display: block;
+        margin-top: 5px;
+        color: #999;
+        font-size: 12px;
+    }
+
+    form {
+        margin-top: 20px;
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+    }
+
+    form input[type="text"] {
+        width: 100%;
+        padding: 8px 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+    }
+
+    form input[type="file"] {
+        margin-right: 15px;
+    }
+
+    form label {
+        font-size: 14px;
+        color: #555;
+        margin-right: 10px;
+    }
+
+    form button {
+        padding: 10px 20px;
+        background-color: #1890ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+    }
+
+    form button:hover {
+        background-color: #1478d7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            width: 250px;
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-right: 2px solid #ccc;
-            height: 100vh;
-            display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
-        .sidebar h3 {
-            text-align: center;
-            margin-bottom: 20px;
+        .sidebar {
+            width: 100%;
+            height: auto;
+            border-right: none;
+            box-shadow: none;
+            flex-direction: row;
+            overflow-x: auto;
         }
 
         .student-name {
-            cursor: pointer;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            transition: background-color 0.3s ease;
+            flex: 0 0 auto;
+            border-bottom: none;
+            border-right: 1px solid #eee;
+            padding: 10px 15px;
         }
 
-        .student-name:hover {
-            background-color: #e0e0e0;
-        }
-
-        /* Main Content Panel */
         .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            padding: 20px;
-            background-color: #fff;
-            overflow-y: auto;
+            padding: 10px 15px;
         }
 
-        .chat-panel {
-            flex-grow: 1;
-            padding: 20px;
-            height: 70vh;
-            overflow-y: auto;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .message {
+        .button-container {
+            justify-content: space-around;
             margin-bottom: 10px;
         }
-
-        .sender {
-            font-weight: bold;
-        }
-
-        /* Button Container */
-        .button-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            padding: 12px 25px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s, transform 0.2s ease-in-out;
-            text-decoration: none;
-        }
-
-        .action-btn:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
-
-        .action-btn:active {
-            background-color: #397d3a;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                height: auto;
-                border-right: none;
-            }
-
-            .main-content {
-                padding: 10px;
-            }
-
-            .button-container {
-                flex-direction: column;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- 左侧学生列表 -->
 <div class="sidebar">
     <h3>Student List</h3>
     {% for lesson in lessons %}
-        <div class="student-name" onclick="openChat('{{ lesson.studentname }}')">
+        <div class="student-name" onclick="openChat('{{ lesson.studentname }}')" id="student-{{ loop.index }}">
             {{ lesson.studentname }}<br>
             <small>{{ lesson.time }}</small>
         </div>
     {% endfor %}
 </div>
 
-<!-- Main Content Area -->
+<!-- 右侧主内容区 -->
 <div class="main-content">
 
-    <!-- Button Container (Navigation Bar) -->
+    <!-- 顶部导航按钮 -->
     <div class="button-container">
         <a href="{{ url_for('addtime.html') }}">
             <button class="action-btn">Add Time</button>
@@ -148,12 +232,12 @@
         <a href="{{ url_for('tutorview.acceptlesson') }}">
             <button class="action-btn">Accept Lessons</button>
         </a>
-        <a href="http://localhost:5000/login/">
+        <a href="{{ url_for('login.html') }}">
             <button class="action-btn">Back to Login</button>
         </a>
     </div>
 
-    <!-- Chat Panel -->
+    <!-- 聊天内容面板 -->
     <div class="chat-panel" id="chat-panel">
         <h3>Select a student to start chatting</h3>
     </div>
@@ -161,53 +245,83 @@
 
 <script>
     const lessons = {{ lessons | tojson }};
+
+    // 记录当前选中学生的DOM元素
+    let currentActive = null;
+
+    function openChat(studentname) {
+        // 找出对应学生的 lesson
+        const lesson = lessons.find(l => l.studentname === studentname);
+        if (!lesson) {
+            document.getElementById('chat-panel').innerHTML = '<p>Student not found.</p>';
+            return;
+        }
+
+        // 右侧聊天框内容生成
+        let chatHTML = `<h3>Chat with ${lesson.studentname}</h3>`;
+        chatHTML += `<div><strong>Lesson Time:</strong> ${lesson.time || 'No lesson'}</div><hr>`;
+
+        if (lesson.messages && lesson.messages.length > 0) {
+            lesson.messages.forEach(msg => {
+                chatHTML += `<div class="message">
+                    <span class="sender">${msg.sender}</span> to <span class="receiver">${msg.receiver}</span>:<br>`;
+                if (msg.type === 'image') {
+                    chatHTML += `<img src="/static/${msg.content}" alt="Image" style="max-width: 200px; border-radius: 4px;">`;
+                } else if (msg.type === 'video') {
+                    chatHTML += `<video controls width="320" style="border-radius: 4px;">
+                        <source src="/static/${msg.content}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>`;
+                } else if (msg.type === 'file') {
+                    const filename = msg.content.split('/').pop();
+                    chatHTML += `<a href="/static/${msg.content}" download>${filename}</a>`;
+                } else if (msg.type === 'text') {
+                    chatHTML += msg.content;
+                } else {
+                    chatHTML += 'Unknown message type';
+                }
+                chatHTML += `<br><small>${msg.timestamp}</small></div>`;
+            });
+        } else {
+            chatHTML += `<p>No messages yet.</p>`;
+        }
+
+        // 发送消息表单
+        chatHTML += `
+            <hr>
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('tutorview.send_message') }}">
+                <input type="hidden" name="studentname" value="${lesson.studentname}">
+                <input type="text" name="message" placeholder="Type a message..." required><br><br>
+                <label>Image: <input type="file" name="image" accept="image/*"></label>
+                <label>Video: <input type="file" name="video" accept="video/*"></label>
+                <label>File: <input type="file" name="file"></label><br><br>
+                <button type="submit">Send</button>
+            </form>
+        `;
+
+        document.getElementById('chat-panel').innerHTML = chatHTML;
+
+        // 处理左侧高亮
+        if (currentActive) {
+            currentActive.classList.remove('active');
+        }
+        // 找到当前选中学生的 div 加高亮
+        const allStudents = document.querySelectorAll('.student-name');
+        allStudents.forEach(el => {
+            if (el.textContent.trim().startsWith(studentname)) {
+                el.classList.add('active');
+                currentActive = el;
+            }
+        });
+    }
+
+    // 如果URL参数有选中学生，自动打开聊天
     function getUrlParam(name) {
         const url = new URL(window.location.href);
         return url.searchParams.get(name);
     }
 
     const selectedStudent = getUrlParam('selected_student');
-
-    function openChat(studentname) {
-        const lesson = lessons.find(l => l.studentname === studentname);
-        if (!lesson) return;
-
-        let chatHTML = `<h3>Chat with ${lesson.studentname}</h3>`;
-        chatHTML += `<div><strong>Lesson Time:</strong> ${lesson.time || 'No lesson'}</div><hr>`;
-
-        if (lesson.messages.length > 0) {
-            lesson.messages.forEach(msg => {
-                chatHTML += `<div class="message"><span class="sender">${msg.sender}</span> to <span class="receiver">${msg.receiver}</span>: `;
-                if (msg.type === 'image') {
-                    chatHTML += `<img src="/static/${msg.content}" alt="Image" style="max-width: 200px;">`;
-                } else if (msg.type === 'video') {
-                    chatHTML += `<video controls width="300"><source src="/static/${msg.content}" type="video/mp4"></video>`;
-                } else if (msg.type === 'file') {
-                    chatHTML += `<a href="/static/${msg.content}" download>${msg.content.split('/').pop()}</a>`;
-                } else {
-                    chatHTML += msg.content;
-                }
-                chatHTML += ` <small>(${msg.timestamp})</small></div>`;
-            });
-        } else {
-            chatHTML += `<p>No messages yet.</p>`;
-        }
-
-        chatHTML += `
-            <hr>
-            <form method="POST" enctype="multipart/form-data" action="{{ url_for('tutorview.send_message') }}">
-                <input type="hidden" name="studentname" value="${lesson.studentname}">
-                <input type="text" name="message" placeholder="Type a message..." required>
-                <input type="file" name="image" accept="image/*">
-                <input type="file" name="file">
-                <input type="file" name="video" accept="video/*">
-                <button type="submit">Send</button>
-            </form>
-        `;
-
-        document.getElementById('chat-panel').innerHTML = chatHTML;
-    }
-
     if (selectedStudent) {
         openChat(selectedStudent);
     }

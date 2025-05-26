@@ -45,41 +45,66 @@ def getstudents():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # 获取导师ID
     cursor.execute('SELECT id FROM Users WHERE username = ?', (tutorusername,))
     tutorrow = cursor.fetchone()
     if not tutorrow:
         conn.close()
         return 'No tutor found!'
-
     tutorid = tutorrow['id']
 
+    # 绑定学生和课程时间
     cursor.execute('SELECT studentid, time FROM TUTORSSTUDENT WHERE tutorid = ?', (tutorid,))
-    allstudents = cursor.fetchall()
+    bound_students = cursor.fetchall()
 
     lessons_dict = {}
 
-    for student in allstudents:
+    for student in bound_students:
         studentid = student['studentid']
         time = student['time'] or 'No lesson'
 
-        cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (studentid,))
+        cursor.execute('SELECT full_name, username FROM Users WHERE ID = ?', (studentid,))
         studentrow = cursor.fetchone()
         if not studentrow:
             continue
-
         studentname = studentrow['full_name']
+        studentusername = studentrow['username']
 
-        # 保证一个学生只出现一次，且更新最新time
-        if studentname in lessons_dict:
-            lessons_dict[studentname]['time'] = time
+        lessons_dict[studentusername] = {
+            'studentname': studentname,
+            'time': time
+        }
+
+    # 查找所有与导师有聊天记录的学生用户名（sender或receiver）
+    cursor.execute('''
+        SELECT DISTINCT sender FROM ChatMessages WHERE receiver = ?
+        UNION
+        SELECT DISTINCT receiver FROM ChatMessages WHERE sender = ?
+    ''', (tutorusername, tutorusername))
+    chat_users = cursor.fetchall()
+
+    for row in chat_users:
+        username = row[0]
+        if username == tutorusername:
             continue
+        # 若不在绑定学生中，添加，时间显示“No lesson”
+        if username not in lessons_dict:
+            cursor.execute('SELECT full_name FROM Users WHERE username = ?', (username,))
+            userrow = cursor.fetchone()
+            fullname = userrow['full_name'] if userrow else username
+            lessons_dict[username] = {
+                'studentname': fullname,
+                'time': 'No lesson'
+            }
 
+    # 载入聊天记录
+    for studentusername, info in lessons_dict.items():
         cursor.execute('''
             SELECT sender, receiver, content, type, timestamp
             FROM ChatMessages
             WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)
             ORDER BY timestamp ASC
-        ''', (studentname, tutorusername, tutorusername, studentname))
+        ''', (studentusername, tutorusername, tutorusername, studentusername))
         messages = cursor.fetchall()
 
         message_list = [
@@ -92,14 +117,11 @@ def getstudents():
             } for m in messages
         ]
 
-        lessons_dict[studentname] = {
-            'studentname': studentname,
-            'time': time,
-            'messages': message_list
-        }
+        lessons_dict[studentusername]['messages'] = message_list
 
     conn.close()
     lessons = list(lessons_dict.values())
+
     return render_template('tutorview.html', lessons=lessons)
 
 @tutorview.route('/send_message', methods=['POST'])
@@ -133,7 +155,6 @@ def send_message():
 
     save_message(tutorusername, studentname, content, msg_type)
 
-    # 发送完消息后重定向回聊天页面（带学生名字参数，实现不跳回默认页面）
     return redirect(url_for('tutorview.getstudents', selected_student=studentname))
 
 @tutorview.route('/viewtimetable')
@@ -192,21 +213,16 @@ def acceptlesson():
     elif alllessons is not None:
         for row in alllessons:
             lesson = alllessons[i]
-            # Get day and time information
             day = lesson[0]
             time = lesson[1]
-
-            # Get student name
             studentid = lesson[3]
             cursor.execute('SELECT full_name FROM Users WHERE id = ?', (studentid,))
             studentrow = cursor.fetchone()
             studentname = studentrow[0]
-
-            # Append in json format to pass to html
             jsonlesson = {'day' : day, 'time' : time, 'studentname' : studentname}
             lessons.append(jsonlesson)
             i = i + 1
-    
+
     return render_template('acceptlesson.html', lessons=lessons)
 
 @tutorview.route('/acceptlesson/submit', methods=['GET', 'POST'])
@@ -214,20 +230,16 @@ def submitacceptlesson():
     if request.method == 'POST':
         conn, cursor = db_connection()
 
-        # Get day, time and student name to be accepted
         day = request.form['day']
         time = request.form['time']
-        studentname = request.form['studentname']\
-        
-        #Find student's id
+        studentname = request.form['studentname']
+
         cursor.execute('SELECT id FROM Users WHERE full_name = ?', (studentname,))
         studentrow = cursor.fetchone()
         studentid = studentrow[0]
 
-        # Change the accepted value in database
         acceptedvalue = '1'
         cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE day = ? AND time = ? AND studentid =?', (acceptedvalue, day, time, studentid,))
         conn.commit()
-        
-    return redirect(url_for('tutorview.acceptlesson'))
 
+    return redirect(url_for('tutorview.acceptlesson'))
