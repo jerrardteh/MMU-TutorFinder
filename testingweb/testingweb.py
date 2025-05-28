@@ -60,10 +60,30 @@ for row in alltutors:
     intro = onetutor[2]
     subjects = onetutor[3]
     price = onetutor[4]
-    star = onetutor[5]
+    cursor.execute('SELECT id FROM Users WHERE full_name = ?', (tutorname,))
+    tutorrow = cursor.fetchone()
+    tutorid = str(tutorrow[0])
+    cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (tutorid,))
+    allstars = cursor.fetchall()
+    cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (tutorid,))
+    validstars = cursor.fetchone()
+    totalstars = 0
+    n = 0
+    averagestars = 0
+    roundedstars = 0
+    if validstars is not None:
+        for row in allstars:
+            starrow = allstars[n]
+            startoadd = starrow[0]
+            print(starrow)
+            totalstars = totalstars + startoadd
+            print(totalstars)
+            n = n + 1
+        averagestars = totalstars / n
+        roundedstars = round(averagestars, 2)
     time = onetutor[6]
     category = onetutor[7]
-    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : star, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro}
+    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : roundedstars, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro}
     tutors.append(jsontutor)
     i = i + 1
 
@@ -155,7 +175,7 @@ def studenttimetable():
     validtutors = cursor.fetchone()
 
     if validtutors is None:
-        return 'No Lessons!'
+        return render_template('studenttimetable.html', classes=classes)
     elif alltutors is not None:
         for row in alltutors:
             lesson = alltutors[i]
