@@ -75,15 +75,17 @@ for row in alltutors:
         for row in allstars:
             starrow = allstars[n]
             startoadd = starrow[0]
-            print(starrow)
             totalstars = totalstars + startoadd
-            print(totalstars)
             n = n + 1
         averagestars = totalstars / n
         roundedstars = round(averagestars, 2)
     time = onetutor[6]
     category = onetutor[7]
-    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : roundedstars, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro}
+    cursor.execute('SELECT profilepicture FROM Users WHERE id = ?', (tutorid,))
+    picturerow = cursor.fetchone()
+    picture = picturerow[0]
+    picturepath = '/static/profilepicture/' + picture
+    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : roundedstars, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro, 'img' : picturepath}
     tutors.append(jsontutor)
     i = i + 1
 
@@ -135,14 +137,12 @@ def submit_review():
     validId = cursor.fetchone()
     id = validId[0]
     studentid = str(id)
-    print(studentid)
     
     # Fetches tutor's database id
     cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
     validId = cursor.fetchone()
     id = validId[0]
     tutorid = str(id)
-    print(tutorid)
     
     # Writes the review into the database 
     cursor.execute('''INSERT INTO REVIEWS (studentid, tutorid, comment, stars) VALUES (?, ?, ?, ?)''', 
