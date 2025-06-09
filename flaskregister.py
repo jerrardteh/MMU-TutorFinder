@@ -1,6 +1,11 @@
-from flask import Flask, request, url_for, redirect, render_template, flash, Blueprint
+from flask import Flask, request, url_for, redirect, render_template, flash, Blueprint, config
 import sqlite3
 import hashlib
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'static\profilepicture'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'webp' }
 
 
 app = Blueprint('register', __name__)
@@ -9,6 +14,9 @@ app.secret_key = 'your_secret_key'
 def get_db_connection():
     conn = sqlite3.connect('users.db', check_same_thread=False)
     return conn, conn.cursor()
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def html():
@@ -57,13 +65,28 @@ def register():
             return redirect(url_for('register.html'))
         
         role = request.form['role']
+        picture = request.files['profilepic']
+        print(allowed_file(picture.filename))
+        newfilename = ""
+        if picture.filename == "":
+            newfilename = 'default.jpg'
+        elif allowed_file(picture.filename) == False and newfilename != 'default.jpg':
+            flash ("Invalid File Type!")
+            return redirect(url_for('register.html'))
+        elif picture and allowed_file(picture.filename):
+            filename = secure_filename(picture.filename)
+            splitfilename = filename.split(".")
+            fileextension = splitfilename[-1]
+            newfilename = user + "." + fileextension
+            picture.save(os.path.join(UPLOAD_FOLDER, newfilename))
+
         bio = request.form['bio']
         subjects = request.form['subject']
 
         conn, cursor = get_db_connection()
 
-        cursor.execute('''INSERT INTO Users (full_name, username, password_hash, mmuid, email, role, bio, subjects) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''', 
-                    (fullName, user, hashPassword, mmuid, email, role, bio, subjects)
+        cursor.execute('''INSERT INTO Users (full_name, username, password_hash, mmuid, email, role, bio, subjects, profilepicture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+                    (fullName, user, hashPassword, mmuid, email, role, bio, subjects, newfilename)
                     )
 
         conn.commit()

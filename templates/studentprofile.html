@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.1em;
+            color: #555;
+            margin: 8px 0;
+        }
+        a.edit-link {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        a.edit-link:hover {
+            text-decoration: underline;
+        }
+        ul.flash-messages {
+            list-style-type: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+        ul.flash-messages li {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        ul.flash-messages li.success {
+            color: teal;
+        }
+        ul.flash-messages li.error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ user.full_name }}
+        <a href="{{ url_for('studentprofile.edit_student_profile') }}" class="edit-link" title="Edit Profile">&#9998;</a>
+    </h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>MMU ID:</strong> {{ user.mmuid }}</p>
+
+    <br>
+    <a href="/studentview">Back</a>
+</body>
+</html>
