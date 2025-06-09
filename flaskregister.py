@@ -53,26 +53,55 @@ def register():
         bytePassword = rawPassword.encode('utf-8')
         hashPassword = hashlib.sha256(bytePassword).hexdigest()
 
+        bio = request.form['bio']
+        selectedsubject = request.form['subject']
+        role = request.form['role']
+        picture = request.files['profilepic']
         mmuid = request.form['mmuid']
+        email = request.form['email']
+
+        # Get all available subjects again
+        conn, cursor = get_db_connection()
+        cursor.execute('SELECT * FROM subjects')
+        allsubjects = cursor.fetchall()
+        subjects = []
+        i = 0
+        for row in allsubjects:
+            subject = allsubjects[i]
+            subjectcode = subject[0]
+            subjectname = subject[1]
+            semester = subject[2]
+            jsonsubject = {'code' : subjectcode, 'name' : subjectname, 'semester' : semester}
+            subjects.append(jsonsubject)
+            i = i + 1
+
+
+        cursor.execute('SELECT exists(SELECT 1 FROM Users WHERE username = ?)', (user,))
+        usernamerow = cursor.fetchall()
+        usernametuple = usernamerow[0]
+        usernameexists= usernametuple[0]
+        if usernameexists == 1:
+            flash ('Username already exists!')
+            return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
+
+
         mmuidlength = len(mmuid)
         if mmuidlength != 10:
             flash('Id must have 10 characters!')
-            return redirect(url_for('register.html'))
+            return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
 
-        email = request.form['email']
+
         if not email.endswith('mmu.edu.my'):
             flash('Email must be a MMU email address!')
-            return redirect(url_for('register.html'))
+            return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
         
-        role = request.form['role']
-        picture = request.files['profilepic']
-        print(allowed_file(picture.filename))
+
         newfilename = ""
         if picture.filename == "":
             newfilename = 'default.jpg'
         elif allowed_file(picture.filename) == False and newfilename != 'default.jpg':
             flash ("Invalid File Type!")
-            return redirect(url_for('register.html'))
+            return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
         elif picture and allowed_file(picture.filename):
             filename = secure_filename(picture.filename)
             splitfilename = filename.split(".")
@@ -80,13 +109,11 @@ def register():
             newfilename = user + "." + fileextension
             picture.save(os.path.join(UPLOAD_FOLDER, newfilename))
 
-        bio = request.form['bio']
-        subjects = request.form['subject']
 
         conn, cursor = get_db_connection()
 
         cursor.execute('''INSERT INTO Users (full_name, username, password_hash, mmuid, email, role, bio, subjects, profilepicture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
-                    (fullName, user, hashPassword, mmuid, email, role, bio, subjects, newfilename)
+                    (fullName, user, hashPassword, mmuid, email, role, bio, selectedsubject, newfilename)
                     )
 
         conn.commit()

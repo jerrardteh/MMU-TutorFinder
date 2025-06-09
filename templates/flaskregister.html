@@ -27,38 +27,38 @@
             <form action="/register/register" method="post" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="fname">Full Name</label>
-                    <input type="text" name="fullname" id="fname" class="form-control" required placeholder="Enter your full name">
+                    <input type="text" name="fullname" id="fname" class="form-control" required placeholder="Enter your full name" value="{{ fullname if fullname else '' }}">
                 </div>
                 
                 <div class="form-group">
                     <label for="user">Username</label>
-                    <input type="text" name="username" id="user" class="form-control" required placeholder="Choose a username">
+                    <input type="text" name="username" id="user" class="form-control" required placeholder="Choose a username" value="{{ user if user else '' }}">
                 </div>
                 
                 <div class="form-group">
                     <label for="pass">Password</label>
-                    <input type="password" name="password" id="pass" class="form-control" required placeholder="Create a strong password">
+                    <input type="password" name="password" id="pass" class="form-control" required placeholder="Create a strong password" value="{{ password if password else '' }}">
                 </div>
                 
                 <div class="form-group">
                     <label for="id">Student ID</label>
-                    <input type="text" name="mmuid" id="id" class="form-control" required placeholder="Enter your MMU student ID">
+                    <input type="text" name="mmuid" id="id" class="form-control" required placeholder="Enter your MMU student ID" value="{{ mmuid if mmuid else '' }}">
                 </div>
                 
                 <div class="form-group">
                     <label for="mail">Email</label>
-                    <input type="email" name="email" id="mail" class="form-control" required placeholder="your.email@example.com">
+                    <input type="email" name="email" id="mail" class="form-control" required placeholder="your.email@example.com" value="{{ email if email else '' }}">
                 </div>
                 
                 <div class="form-group">
                     <label>Role</label>
                     <div class="radio-group">
                         <div class="radio-option">
-                            <input type="radio" id="student" name="role" value="student" required>
+                            <input type="radio" id="student" name="role" value="student" {% if role == "student" %}checked{% endif %} required>
                             <label for="student">Student</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" id="tutor" name="role" value="tutor" required>
+                            <input type="radio" id="tutor" name="role" value="tutor" {% if role == "tutor" %}checked{% endif %} required>
                             <label for="tutor">Tutor</label>
                         </div>
                     </div>
@@ -71,14 +71,14 @@
                 
                 <div class="form-group">
                     <label for="bio">Bio</label>
-                    <textarea name="bio" id="bio" class="form-control" placeholder="Tell us about yourself and your academic background"></textarea>
+                    <textarea name="bio" id="bio" class="form-control" placeholder="Tell us about yourself and your academic background">{{ bio if bio else '' }}</textarea>
                 </div>
                 
                 <div class="form-group">
                     <label for="subject">Subjects</label>
                     <select name="subject">
                         {% for subjects in subjects %}
-                        <option value="{{ subjects.code }}">{{ subjects.semester }} {{subjects.code}} {{subjects.name}}</option>
+                        <option value="{{ subjects.code }}" {% if subjects.code == selectedsubject %}selected{% endif %}>{{ subjects.semester }} {{subjects.code}} {{subjects.name}}</option>
                         {% endfor %}
                     </select>
                 </div>

@@ -8,6 +8,10 @@
     {% endfor %}
 
         <form action="{{ url_for('adminview.submitaddsubjects') }}" method="POST">
+            <label for="semester">Semester:</label>
+            <input name="semester">
+            <br>
+            <br>
             <label for="code">Subject Code:</label>
             <input name="code">
             <br>

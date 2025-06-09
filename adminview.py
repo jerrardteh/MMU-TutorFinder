@@ -41,7 +41,8 @@ def submitaddsubjects():
 
         subjectcode = request.form['code']
         subjectname = request.form['name']
-        cursor.execute('INSERT INTO subjects (subjectcode, subjectname) VALUES (?, ?)', (subjectcode, subjectname,))
+        semester = request.form['semester']
+        cursor.execute('INSERT INTO subjects (subjectcode, subjectname, semester) VALUES (?, ?, ?)', (subjectcode, subjectname, semester,))
         conn.commit()
 
     return redirect(url_for('adminview.addsubjects'))
