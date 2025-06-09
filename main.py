@@ -1,6 +1,6 @@
 from flask import Flask, redirect, url_for
 from flasklogin import app as login_bp
-from flaskregister import app as register_bp
+from flaskregister import  register_bp
 from testingweb.testingweb import app as studentview_bp
 from studentprofile import studentprofile_bp
 from booklesson import app as booklesson_bp
