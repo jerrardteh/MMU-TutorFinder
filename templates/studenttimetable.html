@@ -19,6 +19,8 @@
           <th>Tutor Name</th>
           <th>Time</th>
           <th>Day</th>
+          <th>Subject</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -28,7 +30,7 @@
           <td>{{ classes.tutorname }}</td>
           <td>{{ classes.time }}</td>
           <td>{{ classes.day }}</td>
-          <td>{{ classes.subject }}</td>
+          <td>{{classes.subject}}</td>
           <td>{{ classes.acceptance }}</td>
           <td>
             <form action="{{ url_for('droplesson.dropclasses') }}" method="POST">

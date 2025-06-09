@@ -1,8 +1,117 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin View</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+            }
+            h1 {
+                text-align: center;
+                color: #333;
+                padding: 20px;
+                background-color: #2c3e50;
+                margin: 0;
+            }
+            .container {
+                width: 80%;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: white;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            .intro-text {
+                font-size: 18px;
+                color: #555;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .dashboard-links {
+                display: flex;
+                justify-content: space-around;
+                margin-top: 20px;
+            }
+            .dashboard-links a {
+                text-decoration: none;
+                background-color: #2c3e50;
+                color: white;
+                padding: 15px 30px;
+                font-size: 16px;
+                border-radius: 5px;
+                text-align: center;
+                width: 200px;
+                margin: 10px;
+                display: block;
+            }
+            .dashboard-links a:hover {
+                background-color: #2c3e50;
+            }
+            button {
+                background-color: #2c3e50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-size: 16px;
+                border-radius: 5px;
+                margin-top: 20px;
+            }
+            button:hover {
+                background-color: #2c3e50;
+            }
+            a {
+                text-decoration: none;
+            }
+            .footer {
+                text-align: center;
+                padding: 20px;
+                background-color: #333;
+                color: white;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+            .back-to-login {
+                background-color: #36aef4; /* Red color */
+                color: white;
+                padding: 12px 20px;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                display: block;
+                margin: 20px auto 20px auto;
+                width: 200px;
+                font-size: 16px;
+            }
+            .back-to-login:hover {
+                background-color: #35ade5;
+            }
+        </style>
+    </head>
     <body>
-        <a href="{{ url_for('adminview.addsubjects') }}">
-            <button>Add Subjects</button>
-        </a>
+        <h1>Admin Dashboard</h1>
+        <div class="container">
+            <p class="intro-text">Welcome to the Admin Dashboard. Here, you can manage subjects, view statistics, and more.</p>
+
+            <!-- Dashboard Links -->
+            <div class="dashboard-links">
+                <a href="{{ url_for('adminview.addsubjects') }}">Add Subjects</a>
+                <a href="{{ url_for('adminview.addsubjects') }}">Add Subjects</a>
+                <a href="{{ url_for('adminview.addsubjects') }}">Manage Users</a>
+            </div>
+        </div>
+
+        <!-- Back to Login Button -->
+        <a href="/login/" class="back-to-login">Back to Login</a>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; 2025 Your Company | All Rights Reserved</p>
+        </div>
     </body>
 </html>
