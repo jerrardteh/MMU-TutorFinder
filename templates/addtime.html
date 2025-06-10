@@ -101,19 +101,19 @@
 
     <div class="container">
         <h1>Add Time for Tutor</h1>
-        
-        <form action="/addtime/submit" method="post">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
             <div class="flash-messages">
                 <ul>
-                    {% with messages = get_flashed_messages() %}
-                        {% if messages %}
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
                 </ul>
             </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form action="/addtime/submit" method="post">
 
             <div>
                 {% for daytime in daytime %}

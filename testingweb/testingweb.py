@@ -198,8 +198,11 @@ def studenttimetable():
             tutorname = tutorrow[0]
             cursor.execute('SELECT subjects FROM tutors WHERE id = ?', (tutorid,))
             subjectrow = cursor.fetchone()
-            subject = subjectrow[0]
-            jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subject, 'acceptance' : acceptedmessage}
+            subjectcode = subjectrow[0]
+            cursor.execute('SELECT subjectname FROM subjects WHERE subjectcode = ?', (subjectcode,))
+            subjectnamerow = cursor.fetchone()
+            subjectname = subjectnamerow[0]
+            jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subjectname, 'acceptance' : acceptedmessage}
             classes.append(jsontutor)
             i = i + 1
 
