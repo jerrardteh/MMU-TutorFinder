@@ -71,7 +71,9 @@ for row in alltutors:
     n = 0
     averagestars = 0
     roundedstars = 0
-    if validstars is not None:
+    if validstars is None:
+        roundedstars = 'No reviews yet!'
+    else:
         for row in allstars:
             starrow = allstars[n]
             startoadd = starrow[0]

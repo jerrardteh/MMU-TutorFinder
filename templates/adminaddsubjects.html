@@ -96,6 +96,20 @@
         </style>
     </head>
     <body>
+        
+        <main class="registration-form">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-messages">
+                    <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            {% endwith %}
+
         <h1>Add Subjects</h1>
         <div class="container">
             <h2>Subject List</h2>

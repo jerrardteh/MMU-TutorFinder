@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime
 
 tutorview = Blueprint('tutorview', __name__)
+tutorview.secret_key = 'your_secret_key'
 DB_PATH = 'users.db'
 
 def get_db_connection():
@@ -174,7 +175,7 @@ def tutortimetable():
     validstudents = cursor.fetchone()
 
     if validstudents is None:
-        return 'No Lessons!'
+        return render_template('tutortimetable.html')
     elif allstudents is not None:
         for row in allstudents:
             lesson = allstudents[i]
@@ -209,7 +210,7 @@ def acceptlesson():
     i = 0
     lessons = []
     if validlessons is None:
-        return 'No lessons to accept!'
+        return render_template('acceptlesson.html')
     elif alllessons is not None:
         for row in alllessons:
             lesson = alllessons[i]

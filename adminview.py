@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, session, render_template, request, redirect, url_for
+from flask import Flask, Blueprint, session, render_template, request, redirect, url_for, flash
 import sqlite3
 
 # Establishes connection to database
@@ -42,6 +42,16 @@ def submitaddsubjects():
         subjectcode = request.form['code']
         subjectname = request.form['name']
         semester = request.form['semester']
+
+        cursor.execute('SELECT exists(SELECT 1 FROM subjects WHERE subjectcode = ? AND subjectname = ? AND semester = ?)', (subjectcode, subjectname, semester))
+        subjectrow = cursor.fetchall()
+        subjecttuple = subjectrow[0]
+        subjectexists = subjecttuple[0]
+        if subjectexists == 1:
+            flash('Subject already exists!')
+            return redirect(url_for('adminview.addsubjects'))
+
+
         cursor.execute('INSERT INTO subjects (subjectcode, subjectname, semester) VALUES (?, ?, ?)', (subjectcode, subjectname, semester,))
         conn.commit()
 

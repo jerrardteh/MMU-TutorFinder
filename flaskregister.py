@@ -95,6 +95,13 @@ def register():
             flash('Email must be a MMU email address!')
             return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
         
+        cursor.execute('SELECT exists(SELECT 1 FROM Users WHERE mmuid = ? AND role = ?)', (mmuid, role,))
+        mmuidrow = cursor.fetchall()
+        mmuidtuple = mmuidrow[0]
+        mmuidexists= mmuidtuple[0]
+        if mmuidexists == 1:
+            flash ('MMU ID already exists!')
+            return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
 
         newfilename = ""
         if picture.filename == "":
