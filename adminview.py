@@ -56,3 +56,66 @@ def submitaddsubjects():
         conn.commit()
 
     return redirect(url_for('adminview.addsubjects'))
+
+@app.route('/transcripts')
+def transcripts():
+    conn, cursor = get_db_connection()
+    unaccepted = 0
+    cursor.execute('SELECT * from transcripts WHERE accepted = ?', (unaccepted,))
+    transcriptrow = cursor.fetchall()
+    cursor.execute('SELECT * from transcripts WHERE accepted = ?', (unaccepted,))
+    validtranscripts = cursor.fetchone()
+    i = 0
+    transcripts = []
+    if validtranscripts is not None:
+        for row in transcriptrow:
+            transcript = transcriptrow[i]
+            tutorid = transcript[0]
+            cursor.execute('SELECT full_name FROM Users WHERE id = ?', (tutorid,))
+            tutorrow = cursor.fetchone()
+            tutorname = tutorrow[0]
+            transcriptfilename = transcript[1]
+            transcriptpath = '/static/transcripts/' + transcriptfilename
+            jsontranscript = {'tutorname' : tutorname, 'transcript' : transcriptpath}
+            transcripts.append(jsontranscript)
+            i = i + 1
+    else:
+        # Flash message to user
+        flash('No transcripts waiting for approval!')
+        return render_template('accepttranscripts.html')
+    
+    return render_template('accepttranscripts.html', transcripts = transcripts)
+
+@app.route('/transcripts/submit', methods=['GET', 'POST'])
+def accepttranscripts():
+    if request.method == 'POST':
+        conn, cursor = get_db_connection()
+        tutorname = request.form['tutorname']
+        decision = request.form['decision']
+        print(decision)
+        cursor.execute('SELECT id FROM Users WHERE full_name = ?', (tutorname,))
+        tutorrow = cursor.fetchone()
+        print(tutorrow)
+        if tutorrow is not None:
+            # Get tutor id
+            tutorid = tutorrow[0]
+            # Initialise value for accepted and denied
+            accepted = 1
+            denied = 2
+            # If accepted, change value in database. If denied, don't change anything in database
+            if decision == 'accept':
+                cursor.execute('UPDATE transcripts SET accepted = ? WHERE tutorid = ?', (accepted, tutorid,))
+                conn.commit()
+                message = tutorname + "'s transcript has been approved!"
+            elif decision == 'deny':
+                cursor.execute('UPDATE transcripts SET accepted = ? WHERE tutorid = ?', (denied, tutorid,))
+                conn.commit()
+                message = tutorname + "'s transcript has been denied!"
+            else:
+                message = "Approval or denial request has failed! Try again!"
+
+            print(message)
+
+            # Flash message to user
+            flash(message)
+            return redirect(url_for('adminview.transcripts'))

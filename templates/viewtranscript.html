@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    {% for transcript in transcript %}
+        {% if transcript.transcript != "None" %}
+            <div>
+                <h1>Your Current Transcript</h1>
+                <img src="{{ transcript.transcript }}">
+            </div>
+            <p>Approval Decision: {{ transcript.decision }}</p>
+        {% endif %}
+    {% endfor %}
+
+    <form action="{{ url_for('tutorview.submittranscript') }}" method="post" enctype="multipart/form-data">
+        <h1>Upload A New Transcript</h1><br>
+        <input type="file" name="transcript" id="script" accept="image/jpeg, image/png, image/webp">
+        <button type="submit">Submit</button>
+    </form>
+    <br>
+    <a href="/tutorview/">
+        <button>Back to Tutor View</button>
+    </a>
+</body>

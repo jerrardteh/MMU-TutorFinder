@@ -38,9 +38,6 @@ def html():
 
     return render_template('flaskregister.html', subjects=subjects)
 
-@app.route('/register/successful')
-def success():
-    return 'Account successfully created!'
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -111,7 +108,7 @@ def register():
             return render_template('flaskregister.html', fullname = fullName, user = user, password = rawPassword, bio = bio, subjects = subjects, selectedsubject = selectedsubject, role = role, picture = picture, mmuid = mmuid, email = email)
         elif picture and allowed_file(picture.filename):
             filename = secure_filename(picture.filename)
-            splitfilename = filename.split(".")
+            splitfilename = filename.rsplit(".", 1)
             fileextension = splitfilename[-1]
             newfilename = user + "." + fileextension
             picture.save(os.path.join(UPLOAD_FOLDER, newfilename))

@@ -1,8 +1,12 @@
-from flask import Blueprint, render_template, session, redirect, request, url_for
+from flask import Blueprint, render_template, session, redirect, request, url_for, flash
 import sqlite3
 import os
 import uuid
 from datetime import datetime
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = r"static\transcripts"
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'webp' }
 
 tutorview = Blueprint('tutorview', __name__)
 tutorview.secret_key = 'your_secret_key'
@@ -16,6 +20,9 @@ def get_db_connection():
 def db_connection():
     conn = sqlite3.connect('users.db', check_same_thread=False)
     return conn, conn.cursor()
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def save_file(file, folder):
     file_ext = file.filename.rsplit('.', 1)[-1]
@@ -244,3 +251,88 @@ def submitacceptlesson():
         conn.commit()
 
     return redirect(url_for('tutorview.acceptlesson'))
+
+@tutorview.route('/transcript/view')
+def viewtranscript():
+    username = session.get('username')
+
+    conn, cursor = db_connection()
+    cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
+    tutorrow = cursor.fetchone()
+    tutorid = tutorrow[0]
+
+    cursor.execute('SELECT transcriptpath FROM transcripts WHERE tutorid = ?', (tutorid,))
+    transcriptrow = cursor.fetchone()
+    if transcriptrow is not None:
+        transcriptfilename = transcriptrow[0]
+        transcriptpath = '/static/transcripts/' + transcriptfilename
+    else:
+        transcriptpath = 'None'
+
+    cursor.execute('SELECT accepted FROM transcripts WHERE tutorid = ?', (tutorid,))
+    acceptedrow = cursor.fetchone()
+    accepted = acceptedrow[0]
+    
+    if accepted == 0:
+        decision = 'No decision has been made yet!'
+    elif accepted == 1:
+        decision = 'Accepted!'
+    elif accepted == 2:
+        decision = 'Denied!'
+    else:
+        decision = 'Unknown!'
+
+    transcript = [{'transcript' : transcriptpath, 'decision' : decision}]
+
+    return render_template('viewtranscript.html', transcript = transcript)
+
+@tutorview.route('/transcript/submit', methods=['GET', 'POST'])
+def submittranscript():
+    if request.method == 'POST':
+        transcript = request.files['transcript']
+        username = session.get('username')
+
+        if allowed_file(transcript.filename) == False:
+            flash('Invalid File Type!')
+            return redirect(url_for('tutorview.viewtranscript'))
+        elif transcript and allowed_file(transcript.filename):
+            conn, cursor = db_connection()
+            cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
+            tutorrow = cursor.fetchone()
+            tutorid = tutorrow[0]
+            cursor.execute('SELECT transcriptpath FROM transcripts WHERE tutorid = ?', (tutorid,))
+            tutorrow = cursor.fetchone()
+            if tutorrow is None:
+                transcriptnumber = 0
+                cursor.execute('INSERT INTO transcripts (tutorid) VALUES (?)', (tutorid,))
+            else:
+                current = tutorrow[0]
+                currentfilename = current.split('.')[0]
+                transcriptnumber = int(currentfilename.split('_')[-1])
+            
+            if transcriptnumber == 0:
+                transcriptnumber = transcriptnumber + 1
+                filename = secure_filename(transcript.filename)
+                splitfilename = filename.rsplit('.', 1)
+                extension = splitfilename[-1]
+                newfilename = username + "_" + str(transcriptnumber) + "." + extension
+                print(newfilename)
+                transcript.save(os.path.join(UPLOAD_FOLDER, newfilename))
+            elif transcriptnumber != 0:
+                transcriptnumber = transcriptnumber + 1
+                filename = secure_filename(transcript.filename)
+                splitfilename = filename.rsplit(".", 1)
+                extension = splitfilename[-1]
+                newfilename = username + "_" + str(transcriptnumber) + "." + extension
+                print(newfilename)
+                transcript.save(os.path.join(UPLOAD_FOLDER, newfilename))
+
+            accepted = 0
+            cursor.execute('UPDATE transcripts SET transcriptpath = ? WHERE tutorid = ?', (newfilename, tutorid,))
+            conn.commit()
+            cursor.execute('UPDATE transcripts SET accepted = ? WHERE tutorid = ?', (accepted, tutorid,))
+            conn.commit()
+            flash('Transcript Uploaded Successfully!')
+
+        return render_template('viewtranscript.html')
+                
