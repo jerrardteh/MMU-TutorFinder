@@ -22,7 +22,6 @@ def init_db():
         'mmuid': 'TEXT',
         'bio': 'TEXT',
         'subjects': 'TEXT',
-        'profile_picture': 'TEXT'
     }
     existing = db.execute("PRAGMA table_info(Users)").fetchall()
     existing_columns = {col[1] for col in existing}
@@ -56,7 +55,7 @@ def tutor_profile():
 
     db = get_db()
     user = db.execute(
-        "SELECT full_name, email, mmuid, bio, subjects, profile_picture FROM Users WHERE username = ?",
+        "SELECT full_name, email, mmuid, bio, subjects, profilepicture FROM Users WHERE username = ?",
         (session['username'],)
     ).fetchone()
 
@@ -73,23 +72,38 @@ def edit_tutor_profile():
 
     db = get_db()
     user = db.execute(
-        "SELECT full_name, email, mmuid, bio, subjects, profile_picture FROM Users WHERE username = ?",
+        "SELECT full_name, email, mmuid, bio, profilepicture FROM Users WHERE username = ?",
         (session['username'],)
     ).fetchone()
+
+    allsubjects = db.execute('SELECT * FROM subjects').fetchall()
+    subjects = []
+    i = 0
+
+    for row in allsubjects:
+        subject = allsubjects[i]
+        code = subject[0]
+        name = subject[1]
+        semester = subject[2]
+        jsonsubjects = {'code' : code, 'name' : name, 'semester' : semester}
+        subjects.append(jsonsubjects)
+        i = i + 1
 
     if request.method == 'POST':
         full_name = request.form.get('full_name', '').strip()
         email = request.form.get('email', '').strip()
         mmuid = request.form.get('mmuid', '').strip()
         bio = request.form.get('bio', '').strip()
-        subjects = request.form.get('subjects', '').strip()
+        subject = request.form['subject']
 
         # 上传图片
         file = request.files.get('profile_picture')
-        filename = user['profile_picture']
         if file and file.filename:
-            filename = session['username'] + '_' + file.filename
-            upload_path = os.path.join('static/profile_pictures', filename)
+            filename = file.filename
+            splitfilename = filename.rsplit('.', 1)
+            extension = splitfilename[-1]
+            filename = session['username'] + '.' + extension
+            upload_path = os.path.join('static/profilepicture', filename)
             os.makedirs(os.path.dirname(upload_path), exist_ok=True)
             file.save(upload_path)
 
@@ -100,7 +114,7 @@ def edit_tutor_profile():
 
         try:
             db.execute(
-                '''UPDATE Users SET full_name = ?, email = ?, mmuid = ?, bio = ?, subjects = ?, profile_picture = ? WHERE username = ?''',
+                '''UPDATE Users SET full_name = ?, email = ?, mmuid = ?, bio = ?, subjects = ?, profilepicture = ? WHERE username = ?''',
                 (full_name, email, mmuid, bio, subjects, filename, session['username'])
             )
             db.commit()
@@ -110,4 +124,4 @@ def edit_tutor_profile():
             flash('Update failed: ' + str(e), 'error')
             return render_template('toturprofile_edit.html', user=user)
 
-    return render_template('tutorprofile_edit.html', user=user)
+    return render_template('tutorprofile_edit.html', user=user, subjects = subjects)

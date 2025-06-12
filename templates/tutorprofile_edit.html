@@ -115,10 +115,10 @@
     {% endwith %}
 
     <form method="POST" enctype="multipart/form-data" action="{{ url_for('tutorprofile.edit_tutor_profile') }}">
-        {% if user.profile_picture %}
-            <img src="{{ url_for('static', filename='profile_pictures/' ~ user.profile_picture) }}" alt="Avatar" class="avatar-preview" />
+        {% if user.profilepicture %}
+            <img src="{{ url_for('static', filename='profilepicture/' ~ user.profilepicture) }}" alt="Avatar" class="avatar-preview" />
         {% else %}
-            <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="Default Avatar" class="avatar-preview" />
+            <img src="{{ url_for('static', filename='profilepicture/default.jpg') }}" alt="Default Avatar" class="avatar-preview" />
         {% endif %}
 
         <label for="profile_picture">Upload Profile Picture</label>
@@ -136,8 +136,12 @@
         <label for="bio">Bio</label>
         <textarea name="bio" id="bio" placeholder="Write a short bio...">{{ user.bio }}</textarea>
 
-        <label for="subjects">Subjects</label>
-        <textarea name="subjects" id="subjects" placeholder="List your subjects, separated by commas...">{{ user.subjects }}</textarea>
+        <label for="subject">Subjects</label>
+        <select name="subject">
+            {% for subjects in subjects %}
+            <option value="{{ subjects.code }}">{{ subjects.semester }} {{ subjects.code }} {{ subjects.name }}</option>
+            {% endfor %}
+        </select>
 
         <button type="submit">Update Profile</button>
     </form>

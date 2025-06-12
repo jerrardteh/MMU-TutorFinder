@@ -111,10 +111,10 @@
     {% endwith %}
 
     <div class="profile-box">
-        {% if user.profile_picture %}
-            <img src="{{ url_for('static', filename='profile_pictures/' ~ user.profile_picture) }}" alt="Avatar" class="avatar-preview" />
+        {% if user.profilepicture %}
+            <img src="{{ url_for('static', filename='profilepicture/' ~ user.profilepicture) }}" alt="Avatar" class="avatar-preview" />
         {% else %}
-            <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="Default Avatar" class="avatar-preview" />
+            <img src="{{ url_for('static', filename='profilepicture/default.jpg') }}" alt="Default Avatar" class="avatar-preview" />
         {% endif %}
 
         <p><strong>Email:</strong> {{ user.email }}</p>
