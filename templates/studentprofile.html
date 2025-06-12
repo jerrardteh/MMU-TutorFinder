@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 30px 35px;
+            background: #f0f2f5;
+            border-radius: 14px;
+            box-shadow: 0 0 22px rgba(0,0,0,0.08);
+            color: #2c3e50;
+        }
+        h1 {
+            font-weight: 700;
+            font-size: 2.4rem;
+            color: #34495e;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        a.edit-link {
+            font-size: 1.4rem;
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: 700;
+            padding: 6px 12px;
+            border: 2px solid #2980b9;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        a.edit-link:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+        .profile-box {
+            background: white;
+            padding: 30px 35px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            margin-top: 20px;
+        }
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #2980b9;
+            background: #dfe6e9;
+            box-shadow: 0 4px 14px rgba(41, 128, 185, 0.4);
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        p strong {
+            color: #34495e;
+        }
+        a.back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #2980b9;
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+        a.back-link:hover {
+            border-color: #2980b9;
+        }
+        ul.flash-messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+        ul.flash-messages li {
+            margin-bottom: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+        ul.flash-messages li.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        ul.flash-messages li.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>
+        Welcome, {{ user.full_name }}
+        <a href="{{ url_for('studentprofile.edit_student_profile') }}" class="edit-link" title="Edit Profile">&#9998; Edit</a>
+    </h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <div class="profile-box">
+        {% if user.profile_picture %}
+            <img src="{{ url_for('static', filename='profile_pictures/' ~ user.profile_picture) }}" alt="Avatar" class="avatar-preview" />
+        {% else %}
+            <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="Default Avatar" class="avatar-preview" />
+        {% endif %}
+
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>MMU ID:</strong> {{ user.mmuid }}</p>
+        <p><strong>Bio:</strong> {{ user.bio or 'No bio provided.' }}</p>
+        <p><strong>Subjects:</strong> {{ user.subjects or 'No subjects listed.' }}</p>
+    </div>
+
+    <a href="/studentview" class="back-link">← Back</a>
+</body>
+</html>
