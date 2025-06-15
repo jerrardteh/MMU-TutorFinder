@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Student Profile - MMU</title>
+    <title>Tutor Profile - MMU</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -69,10 +69,10 @@
 <body class="min-h-screen p-4">
     <header class="header-bg flex items-center justify-between p-4 text-white">
         <img src="{{ url_for('static', filename='mmu-logo.png') }}" alt="MMU Logo" class="h-16">
-        <h1 class="text-4xl font-bold">Student Profile</h1>
+        <h1 class="text-4xl font-bold">Tutor Profile</h1>
         <div class="space-x-4">
-            <a href="{{ url_for('studentprofile.edit_student_profile') }}" class="mmu-red px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200">Edit</a>
-            <a href="/studentview" class="mmu-red px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200">Logout</a>
+            <a href="{{ url_for('tutorprofile.edit_tutor_profile') }}" class="mmu-red px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200">Edit</a>
+            <a href="/tutorview" class="mmu-red px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200">Logout</a>
         </div>
     </header>
 

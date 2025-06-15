@@ -9,7 +9,7 @@ from datetime import datetime
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logging.info(f"Application started at {datetime.now().strftime('%I:%M %p +08, %A, %B %d, %Y')}")
 
-studentprofile_bp = Blueprint('studentprofile', __name__)
+tutorprofile_bp = Blueprint('tutorprofile', __name__)
 UPLOAD_FOLDER = os.path.abspath(os.path.join('static', 'profilepicture'))  # Use existing profilepicture folder
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'webp'}
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
@@ -31,8 +31,8 @@ def allowed_file(filename, file):
 def is_valid_subject(subject_code, available_subjects):
     return any(s['code'] == subject_code for s in available_subjects)
 
-@studentprofile_bp.route('/studentprofile')
-def student_profile():
+@tutorprofile_bp.route('/tutorprofile')
+def tutor_profile():
     if 'username' not in session:
         logging.info("User not logged in, redirecting to login")
         return redirect('/flasklogin')
@@ -55,11 +55,11 @@ def student_profile():
     original_subjects = user['subjects']
     subjects = user['subjects'] if user['subjects'] in valid_subjects else ''
     logging.info(f"Rendering profile for {session['username']}, profile_picture: {user['profile_picture']}, original_subjects: {original_subjects}, sanitized_subjects: {subjects}")
-    return render_template('studentprofile.html', user={**user, 'subjects': subjects}, os=os, valid_subjects=valid_subjects)
+    return render_template('tutorprofile.html', user={**user, 'subjects': subjects}, os=os, valid_subjects=valid_subjects)
 
 
-@studentprofile_bp.route('/editprofile', methods=['GET', 'POST'])
-def edit_student_profile():
+@tutorprofile_bp.route('/editprofile', methods=['GET', 'POST'])
+def edit_tutor_profile():
     if 'username' not in session:
         logging.info("User not logged in, redirecting to login")
         return redirect('/flasklogin')
@@ -108,7 +108,7 @@ def edit_student_profile():
             if not allowed_file(file.filename, file):
                 flash(f"Invalid file: Must be one of {', '.join(ALLOWED_EXTENSIONS)} and under 5MB", 'error')
                 logging.error(f"File validation failed for {file.filename}")
-                return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+                return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
             safe_filename = secure_filename(file.filename)
             filename = f"{session['username']}_{safe_filename}"
             upload_path = os.path.join(UPLOAD_FOLDER, filename)
@@ -116,13 +116,13 @@ def edit_student_profile():
                 if not os.path.exists(UPLOAD_FOLDER):
                     flash("Profile picture folder does not exist.", 'error')
                     logging.error(f"Folder {UPLOAD_FOLDER} does not exist")
-                    return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+                    return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
                 logging.info(f"Saving file to: {os.path.abspath(upload_path)}")
                 file.save(upload_path)
                 if not os.path.exists(upload_path):
                     flash("File was not saved to the server.", 'error')
                     logging.error(f"File not found after saving: {upload_path}")
-                    return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+                    return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
                 file_uploaded = True
                 if user['profile_picture'] and user['profile_picture'] != 'default.png':
                     old_picture_path = os.path.join(UPLOAD_FOLDER, user['profile_picture'])
@@ -132,7 +132,7 @@ def edit_student_profile():
             except Exception as e:
                 flash(f"Failed to save file: {str(e)}", 'error')
                 logging.error(f"File save failed: {str(e)}")
-                return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+                return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
 
         # Log submitted and current values
         logging.info(f"Submitted: full_name={full_name}, email={email}, mmuid={mmuid}, bio={bio}, subject={subject}, filename={filename}")
@@ -148,7 +148,7 @@ def edit_student_profile():
         if not has_changes:
             flash('No changes made to the profile.', 'info')
             logging.info("No profile changes detected")
-            return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+            return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
 
         try:
             logging.info(f"Updating profile for {session['username']} with filename: {filename}, subjects: {subject} at {datetime.now().strftime('%I:%M %p +08')}")
@@ -159,11 +159,11 @@ def edit_student_profile():
             db.commit()
             flash('Profile updated successfully!', 'success')
             logging.info("Profile updated successfully")
-            return redirect(url_for('studentprofile.student_profile'))
+            return redirect(url_for('tutorprofile.tutor_profile'))
         except Exception as e:
             flash('Update failed: ' + str(e), 'error')
             logging.error(f"Database update failed: {str(e)}")
-            return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+            return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
 
     logging.info(f"Rendering edit profile page for {session['username']} at {datetime.now().strftime('%I:%M %p +08')}")
-    return render_template('studentprofile_edit.html', user=user, subjects=subjects, os=os)
+    return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os)
