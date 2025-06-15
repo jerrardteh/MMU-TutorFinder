@@ -33,34 +33,33 @@ def register():
         role = request.form['role']
         bio = request.form['bio']
         subject = request.form['subject']
-        picture = request.files.get('profilepic')
 
         # 验证学号长度
         if len(mmuid) != 10:
             flash('MMUID must be exactly 10 characters!')
-            return render_template('flaskregister.html', subjects=subjects)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
         # 验证邮箱格式
         if not email.endswith('mmu.edu.my'):
             flash('Email must end with mmu.edu.my')
-            return render_template('flaskregister.html', subjects=subjects)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
         # 密码加密
         hashed_password = hashlib.sha256(raw_password.encode('utf-8')).hexdigest()
 
         # 图片处理
         profile_pic_filename = 'default.jpg'
-        if picture and picture.filename:
-            if allowed_file(picture.filename):
-                ext = picture.filename.rsplit('.', 1)[1].lower()
-                base_name = secure_filename(picture.filename.rsplit('.', 1)[0])
-                profile_pic_filename = f"{username}_{base_name}.{ext}"
-                save_path = os.path.join(UPLOAD_FOLDER, profile_pic_filename)
-                os.makedirs(os.path.dirname(save_path), exist_ok=True)
-                picture.save(save_path)
-            else:
-                flash('Invalid image format!')
-                return render_template('flaskregister.html', subjects=subjects)
+        # if picture and picture.filename:
+        #     if allowed_file(picture.filename):
+        #         ext = picture.filename.rsplit('.', 1)[1].lower()
+        #         base_name = secure_filename(picture.filename.rsplit('.', 1)[0])
+        #         profile_pic_filename = f"{username}_{base_name}.{ext}"
+        #         save_path = os.path.join(UPLOAD_FOLDER, profile_pic_filename)
+        #         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        #         picture.save(save_path)
+        #     else:
+        #         flash('Invalid image format!')
+        #         return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
         # 写入数据库
         try:
@@ -72,7 +71,7 @@ def register():
             conn.commit()
         except sqlite3.IntegrityError:
             flash('Email or username already exists.')
-            return render_template('flaskregister.html', subjects=subjects)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
         flash('Account created successfully!')
         return redirect(url_for('login.html'))  # 假设你有 login 路由

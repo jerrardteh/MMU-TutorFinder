@@ -39,7 +39,7 @@ def tutor_profile():
 
     db = get_db()
     user = db.execute(
-        "SELECT full_name, email, mmuid, bio, subjects, profilepicture AS profile_picture FROM Users WHERE username = ?",
+        "SELECT full_name, email, mmuid, bio, subjects, profile_picture AS profile_picture FROM Users WHERE username = ?",
         (session['username'],)
     ).fetchone()
 
@@ -49,7 +49,7 @@ def tutor_profile():
 
     # Sanitize subjects if invalid
     cursor = db.cursor()
-    cursor.execute('SELECT code,name,semester FROM subjects')
+    cursor.execute('SELECT subjectcode, subjectname, semester FROM subjects')
     valid_subjects = [row[0] for row in cursor.fetchall()]
     #valid_subjects = [row for row in cursor.fetchall()]
     original_subjects = user['subjects']
@@ -66,7 +66,7 @@ def edit_tutor_profile():
 
     db = get_db()
     user = db.execute(
-        "SELECT full_name, email, mmuid, bio, subjects, profilepicture AS profile_picture FROM Users WHERE username = ?",
+        "SELECT full_name, email, mmuid, bio, subjects, profile_picture AS profile_picture FROM Users WHERE username = ?",
         (session['username'],)
     ).fetchone()
 
@@ -75,7 +75,7 @@ def edit_tutor_profile():
         return "User not found", 404
 
     cursor = db.cursor()
-    cursor.execute('SELECT code,name,semester FROM subjects')
+    cursor.execute('SELECT subjectcode, subjectname, semester FROM subjects')
     allsubjects = cursor.fetchall()
     subjects = [{'code': row[0], 'name': row[1], 'semester': row[2]} for row in allsubjects]
 
@@ -153,7 +153,7 @@ def edit_tutor_profile():
         try:
             logging.info(f"Updating profile for {session['username']} with filename: {filename}, subjects: {subject} at {datetime.now().strftime('%I:%M %p +08')}")
             db.execute(
-                '''UPDATE Users SET full_name = ?, email = ?, mmuid = ?, bio = ?, subjects = ?, profilepicture = ? WHERE username = ?''',
+                '''UPDATE Users SET full_name = ?, email = ?, mmuid = ?, bio = ?, subjects = ?, profile_picture = ? WHERE username = ?''',
                 (full_name, email, mmuid, bio, subject, filename, session['username'])
             )
             db.commit()

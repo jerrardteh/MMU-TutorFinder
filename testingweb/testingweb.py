@@ -56,6 +56,7 @@ tutors = []
 i = 0
 for row in alltutors:
     onetutor = alltutors[i]
+    tutorid = onetutor[0]
     tutorname = onetutor[1]
     intro = onetutor[2]
     subjects = onetutor[3]
@@ -63,7 +64,10 @@ for row in alltutors:
     star = onetutor[5]
     time = onetutor[6]
     category = onetutor[7]
-    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : star, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro}
+    picturerow = cursor.execute('SELECT profile_picture FROM Users WHERE id = ?', (tutorid,)).fetchone()
+    picture = picturerow[0]
+    picturepath = '\static\profilepicture\\' + picture
+    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : star, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro, 'img' : picturepath}
     tutors.append(jsontutor)
     i = i + 1
 
@@ -72,7 +76,7 @@ for row in alltutors:
 def tutorlist():
     return render_template('testingweb.html', tutors=tutors)
 
-REVIEWS_FILE = os.path.join(os.path.dirname(__file__), 'reviews.json')
+# REVIEWS_FILE = os.path.join(os.path.dirname(__file__), 'reviews.json')
 
 @app.route('/reviews')
 def reviews():

@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for, redirect, render_template, session, Blueprint
+from flask import Flask, request, url_for, redirect, render_template, session, Blueprint, flash
 import sqlite3
 import hashlib
 
@@ -36,7 +36,8 @@ def login():
 
         # If the user doesn't exist, redirect to invalid page
         if userResult is None:
-            return redirect('invalid')
+            flash('Username or password is incorrect!')
+            return render_template('flasklogin.html')
         else:
             correctHash = userResult['password_hash']
             role = userResult['role']
@@ -51,15 +52,12 @@ def login():
                 elif role == 'admin':
                     return redirect(url_for('adminview.html'))
             else:
-                return redirect('invalid')
+                flash('Username or password is incorrect!')
+                return render_template('flasklogin.html')
 
     # If the method is GET, render the login form
     return render_template('flasklogin.html')
 
-# Page for unsuccessful login
-@app.route('/invalid')
-def invalid_user():
-    return 'Username or password is incorrect!'
 
 # # The previous hello_user route is no longer needed for redirection, but can be kept without affecting functionality
 # @app.route('/user/<user>/<role>')

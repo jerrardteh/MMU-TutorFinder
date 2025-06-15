@@ -3,6 +3,7 @@ from flasklogin import app as login_bp
 from flaskregister import  register_bp
 from testingweb.testingweb import app as studentview_bp
 from studentprofile import studentprofile_bp
+from tutorprofile import tutorprofile_bp
 from booklesson import app as booklesson_bp
 from tutorview import tutorview  
 from chat import chat_bp
@@ -19,6 +20,7 @@ def appfunc():
 
 app.register_blueprint(studentprofile_bp, url_prefix='/studentprofile')
 app.register_blueprint(studentview_bp, url_prefix='/studentview')
+app.register_blueprint(tutorprofile_bp, url_prefix='/tutorprofile')
 app.register_blueprint(login_bp, url_prefix='/login')
 app.register_blueprint(register_bp, url_prefix='/register')
 app.register_blueprint(booklesson_bp, url_prefix='/booklesson')
