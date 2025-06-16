@@ -6,92 +6,109 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F5F5F5;
-        }
-        .mmu-blue {
-            color: #003087;
-        }
-        .mmu-red {
-            color: #000000;
-            background-color: #D32F2F;
-        }
-        .mmu-bg-blue {
-            background-color: #003087;
-        }
-        .header-bg {
-            background: linear-gradient(to right, #003087, #D32F2F);
-            height: 150px;
-            position: relative;
-        }
-    </style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #F5F5F5;
+    }
+
+    .header-bg {
+        background-color: #2C3E50;
+    }
+</style>
+
 </head>
-<body class="min-h-screen p-4">
-    <header class="header-bg flex items-center justify-between p-4 text-white">
-        <img src="{{ url_for('static', filename='mmu-logo.png') }}" alt="MMU Logo" class="h-16">
-        <h1 class="text-4xl font-bold">Edit Profile</h1>
-        <div class="space-x-4">
-            <a href="{{ url_for('studentprofile.student_profile') }}" class="mmu-red px-4 py-2 rounded hover:bg-red-700 transition-colors duration-200">Back</a>
-        </div>
+<body class="min-h-screen p-6 bg-gray-100 flex items-center justify-center">
+
+  <div class="w-full max-w-3xl bg-white rounded-lg shadow-lg p-3">
+
+    <header class="header-bg flex items-center justify-center p-4 text-white rounded-md shadow mb-8">
+        <h1 class="text-3xl font-bold">Edit Profile</h1>
     </header>
 
-    <div class="container mx-auto mt-8">
-        {% set messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="mb-4">
-                {% for category, message in messages %}
-                    <p class="px-4 py-2 rounded {{ 
-                        'bg-red-100 text-red-700' if category == 'error' else 
-                        'bg-green-100 text-green-700' if category == 'success' else 
-                        'bg-blue-100 text-blue-700' 
-                    }}">{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        <form method="POST" enctype="multipart/form-data" class="space-y-4 p-4 bg-white rounded shadow">
-            <div class="flex items-center space-x-4">
-                {% if user.profile_picture and os.path.exists('static/profilepicture/' + user.profile_picture) %}
-                    <img src="{{ url_for('static', filename='profilepicture/' + user.profile_picture) }}" alt="Profile Picture" class="w-32 h-32 object-cover rounded border-2 border-mmu-blue">
-                {% else %}
-                    <img src="{{ url_for('static', filename='profilepicture/default.png') }}" alt="Default Profile Picture" class="w-32 h-32 object-cover rounded border-2 border-mmu-blue">
-                {% endif %}
-                <label for="profile_picture" class="text-mmu-blue hover:text-blue-800 cursor-pointer font-medium transition-colors duration-200">Upload</label>
-                <input type="file" name="profile_picture" id="profile_picture" accept="image/*" class="hidden">
-            </div>
-
-            <div>
-                <label for="full_name" class="block text-lg font-medium mmu-blue">Full Name</label>
-                <input type="text" name="full_name" id="full_name" value="{{ user.full_name or '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mmu-blue focus:ring focus:ring-mmu-blue focus:ring-opacity-50">
-            </div>
-
-            <div>
-                <label for="email" class="block text-lg font-medium mmu-blue">Email</label>
-                <input type="email" name="email" id="email" value="{{ user.email or '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mmu-blue focus:ring focus:ring-mmu-blue focus:ring-opacity-50">
-            </div>
-
-            <div>
-                <label for="mmuid" class="block text-lg font-medium mmu-blue">MMU ID</label>
-                <input type="text" name="mmuid" id="mmuid" value="{{ user.mmuid or '' }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mmu-blue focus:ring focus:ring-mmu-blue focus:ring-opacity-50">
-            </div>
-
-            <div>
-                <label for="bio" class="block text-lg font-medium mmu-blue">Bio</label>
-                <textarea name="bio" id="bio" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mmu-blue focus:ring focus:ring-mmu-blue focus:ring-opacity-50">{{ user.bio or '' }}</textarea>
-            </div>
-
-            <div class="form-group">
-                    <label for="subjects" class="block text-lg font-medium mmu-blue">Subjects</label>
-                    <select name="subject" id="subjects" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-mmu-blue focus:ring focus:ring-mmu-blue focus:ring-opacity-50">
-                        {% for subjects in subjects %}
-                        <option value="{{ subjects.code }}">{{ subjects.semester }} {{subjects.code}} {{subjects.name}}</option>
-                        {% endfor %}
-                    </select>
-            </div>
-
-            <button type="submit" class="w-full mmu-red text-white py-2 px-4 rounded hover:bg-red-700 transition-colors duration-200">Update Profile</button>
-        </form>
+    <div>
+      {% set messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+          <div class="mb-6 space-y-3">
+              {% for category, message in messages %}
+                  <p class="px-5 py-3 rounded {{ 
+                      'bg-red-100 text-red-700' if category == 'error' else 
+                      'bg-green-100 text-green-700' if category == 'success' else 
+                      'bg-blue-100 text-blue-700' 
+                  }} shadow-sm border">
+                      {{ message }}
+                  </p>
+              {% endfor %}
+          </div>
+      {% endif %}
     </div>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-8">
+
+        <div class="flex items-center space-x-6">
+            {% if user.profile_picture and os.path.exists('static/profilepicture/' + user.profile_picture) %}
+                <img src="{{ url_for('static', filename='profilepicture/' + user.profile_picture) }}" 
+                     alt="Profile Picture" class="w-32 h-32 object-cover rounded border-2 border-mmu-blue shadow-md">
+            {% else %}
+                <img src="{{ url_for('static', filename='profilepicture/default.png') }}" 
+                     alt="Default Profile Picture" class="w-32 h-32 object-cover rounded border-2 border-mmu-blue shadow-md">
+            {% endif %}
+            <label for="profile_picture" class="text-mmu-blue hover:text-blue-800 cursor-pointer font-semibold transition-colors duration-200">
+                Upload New Picture
+            </label>
+            <input type="file" name="profile_picture" id="profile_picture" accept="image/*" class="hidden">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label for="full_name" class="block text-lg font-semibold mmu-blue mb-1">Full Name</label>
+                <input type="text" name="full_name" id="full_name" value="{{ user.full_name or '' }}" 
+                       class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mmu-blue focus:border-mmu-blue">
+            </div>
+
+            <div>
+                <label for="email" class="block text-lg font-semibold mmu-blue mb-1">Email</label>
+                <input type="email" name="email" id="email" value="{{ user.email or '' }}" 
+                       class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mmu-blue focus:border-mmu-blue">
+            </div>
+
+            <div>
+                <label for="mmuid" class="block text-lg font-semibold mmu-blue mb-1">MMU ID</label>
+                <input type="text" name="mmuid" id="mmuid" value="{{ user.mmuid or '' }}" 
+                       class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mmu-blue focus:border-mmu-blue">
+            </div>
+
+            <div>
+                <label for="subjects" class="block text-lg font-semibold mmu-blue mb-1">Subjects</label>
+                <select name="subject" id="subjects"
+                        class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mmu-blue focus:border-mmu-blue">
+                    {% for subjects in subjects %}
+                        <option value="{{ subjects.code }}">{{ subjects.semester }} {{ subjects.code }} {{ subjects.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label for="bio" class="block text-lg font-semibold mmu-blue mb-1">Bio</label>
+            <textarea name="bio" id="bio" rows="4"
+                      class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mmu-blue focus:border-mmu-blue">{{ user.bio or '' }}</textarea>
+        </div>
+
+        <div class="flex justify-between space-x-4 mt-6">
+            <a href="{{ url_for('studentprofile.student_profile') }}" 
+               class="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white py-3 rounded-md shadow-md text-center font-semibold transition duration-200">
+                Back
+            </a>
+
+            <button type="submit" 
+                    class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-md shadow-md font-semibold transition duration-200">
+                Update Profile
+            </button>
+        </div>
+    </form>
+
+  </div>
+
 </body>
+
 </html>

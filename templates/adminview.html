@@ -1,12 +1,88 @@
 <!DOCTYPE html>
-<html>
-    <body>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin Dashboard</title>
+<style>
+    /* Reset and base */
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #3a5068, #5bc0be);
+        margin: 0;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #fff;
+    }
+
+    .container {
+        background: #ffffffee; /* Slight transparency */
+        padding: 40px 50px;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        width: 360px;
+        text-align: center;
+        color: #2C3E50;
+    }
+
+    h1 {
+        font-weight: 700;
+        margin-bottom: 30px;
+        font-size: 2rem;
+        letter-spacing: 1px;
+        color: #2C3E50;
+    }
+
+    a {
+        text-decoration: none;
+        display: block;
+        margin: 15px 0;
+    }
+
+    button {
+        width: 100%;
+        padding: 16px 0;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, #2C3E50, #1b2a3b);
+        box-shadow: 0 6px 15px rgba(44, 62, 80, 0.5);
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+        user-select: none;
+    }
+
+    button:hover {
+        background: linear-gradient(135deg, #1a2736, #0f1a24);
+        box-shadow: 0 8px 20px rgba(26, 39, 54, 0.7);
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+</style>
+</head>
+<body>
+    <div class="container" role="main">
+        <h1>Admin Dashboard</h1>
+
         <a href="{{ url_for('adminview.addsubjects') }}">
-            <button>Add Subjects</button>
+            <button type="button" aria-label="Add Subjects">Add Subjects</button>
         </a>
-        <br>
         <a href="{{ url_for('adminview.transcripts') }}">
-            <button>Approve Transcripts</button>
+            <button type="button" aria-label="Approve Transcripts">Approve Transcripts</button>
         </a>
-    </body>
+        <a href="http://localhost:5000/login/">
+            <button type="button" aria-label="Back to Login">Back to Login</button>
+        </a>
+    </div>
+</body>
 </html>

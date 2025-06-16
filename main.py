@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, config
 from flasklogin import app as login_bp
 from flaskregister import  register_bp
 from testingweb.testingweb import app as studentview_bp
@@ -32,3 +33,6 @@ app.register_blueprint(adminview_bp, url_prefix='/adminview')
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+

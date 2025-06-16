@@ -1,7 +1,110 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        <ul>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Subjects - Admin</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f7fa;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 480px;
+        }
+        h1 {
+            color: #2C3E50;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        ul.messages {
+            list-style-type: none;
+            padding: 10px 15px;
+            background-color: #ffdddd;
+            color: #d8000c;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #d8000c;
+        }
+        ul.subject-list {
+            padding: 0;
+            margin-bottom: 30px;
+            max-height: 180px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        ul.subject-list li {
+            padding: 8px 15px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #34495e;
+        }
+        ul.subject-list li:last-child {
+            border-bottom: none;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: 600;
+            color: #2C3E50;
+        }
+        input[type="text"], input[name="semester"] {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100%;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, input[name="semester"]:focus {
+            outline: none;
+            border-color: #2C3E50;
+            box-shadow: 0 0 5px rgba(44, 62, 80, 0.4);
+        }
+        button {
+            background-color: #2C3E50;
+            color: white;
+            border: none;
+            padding: 14px 0;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #1a2736;
+        }
+        .back-button {
+            margin-top: 25px;
+            width: 100%;
+            text-align: center;
+        }
+        .back-button a button {
+            width: auto;
+            padding: 12px 30px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Subjects</h1>
+
+        <ul class="messages">
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     {% for message in messages %}
@@ -11,26 +114,30 @@
             {% endwith %}
         </ul>
 
-    {% for subjects in subjects %}
-    <ul>
-        <li>{{ subjects.semester }} {{ subjects.code }} {{ subjects.name }}</li>
-    </ul>
-    {% endfor %}
+        <ul class="subject-list">
+            {% for subjects in subjects %}
+            <li>{{ subjects.semester }} - {{ subjects.code }} - {{ subjects.name }}</li>
+            {% endfor %}
+        </ul>
 
-        <form action="{{ url_for('adminview.submitaddsubjects') }}" method="POST">
+        <form action="{{ url_for('adminview.submitaddsubjects') }}" method="POST" novalidate>
             <label for="semester">Semester:</label>
-            <input name="semester">
-            <br>
-            <br>
+            <input id="semester" name="semester" type="text" placeholder="e.g. Fall 2025" required />
+
             <label for="code">Subject Code:</label>
-            <input name="code">
-            <br>
-            <br>
+            <input id="code" name="code" type="text" placeholder="e.g. CS101" required />
+
             <label for="name">Subject Name:</label>
-            <input name="name">
-            <br>
-            <br>
+            <input id="name" name="name" type="text" placeholder="e.g. Introduction to Programming" required />
+
             <button type="submit">Submit</button>
         </form>
-    </body>
+
+        <div class="back-button">
+            <a href="{{ url_for('adminview.html') }}">
+                <button type="button">Back to Admin View</button>
+            </a>
+        </div>
+    </div>
+</body>
 </html>

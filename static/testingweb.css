@@ -1,36 +1,55 @@
-.filters {
+.navbar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: space-between; /* Spreads out filter items and icon */
-  width: 100%;
   padding: 10px;
+  background-color: #2C3E50; /* Dark blue-gray */
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* This will group the filter items together */
-.filter-items {
+.left-items,
+.right-items {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 10px;
 }
 
-/* Style the home icon */
-.home-icon {
-  font-size: 24px;
-  color: #007bff; /* Color of the icon */
-  transition: color 0.3s ease;
-}
-
-.home-icon:hover {
-  color: #0056b3; /* Change color on hover */
-  cursor: pointer;
-}
-.filter-items input,
-.filter-items select {
+.navbar input,
+.navbar select,
+.navbar button {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
+.navbar .home-icon {
+  font-size: 24px;
+  color: #ecf0f1;
+  transition: color 0.3s ease;
+}
+
+.navbar .home-icon:hover {
+  color: #f1c40f;
+  cursor: pointer;
+}
+
+.navbar .nav-link {
+  padding: 8px 12px;
+  background-color: #2980b9;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.navbar .nav-link:hover {
+  background-color: #1abc9c;
+}
+
+/* Original tutor card style remains */
 .card {
   display: flex;
   gap: 15px;
@@ -75,52 +94,102 @@
 .card .buttons button:hover {
   background-color: #0056b3;
 }
-#resetButton {
-  padding: 8px 16px;
+
+/* Navbar basic styles remain the same */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #2C3E50;
+  border-bottom: 1px solid #ddd;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.left-items,
+.right-items {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar input,
+.navbar select,
+.navbar button {
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+/* Match Reset button with select box */
+#resetButton {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
   cursor: pointer;
 }
 
 #resetButton:hover {
-  background-color: #3d3c3d85;
+  background-color: #f9f9f9;
 }
 
-/* Styling the back to login button */
-.back-to-login-btn {
-  padding: 10px 20px;
-  font-size: 16px;
+/* Dropdown for Student Profile */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  padding: 8px 12px;
+  background-color: #2980b9;
   color: white;
-  background-color: #007bff;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  position: fixed;
-  bottom: 20px; /* Distance from the bottom of the page */
-  left: 20px;   /* Distance from the left of the page */
-  z-index: 999; /* Ensures the button stays on top of other content */
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-
-.home-icon {
-  font-size: 24px;
-  color: #007bff; /* Color of the icon */
-  transition: color 0.3s ease;
-}
-
-.home-icon:hover {
-  color: #0056b3; /* Change color on hover */
-  cursor: pointer;
-}
-
-#viewclass {
-  padding: 8px 16px;
-  border: 1px solid #ccc;
   border-radius: 4px;
   cursor: pointer;
 }
 
-#viewclass:hover {
-  background-color: #3d3c3d85;
+.dropbtn:hover {
+  background-color: #1abc9c;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: white;
+  min-width: 150px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  z-index: 999;
+}
+
+.dropdown-content a {
+  color: #2C3E50;
+  padding: 10px 12px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Home icon styling */
+.navbar .home-icon {
+  font-size: 24px;
+  color: #ecf0f1;
+  transition: color 0.3s ease;
+}
+
+.navbar .home-icon:hover {
+  color: #f1c40f;
+  cursor: pointer;
 }

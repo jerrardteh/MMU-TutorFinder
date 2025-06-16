@@ -6,41 +6,47 @@
   <title>Tutor Listings</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='testingweb.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-  <header>
-    <h1>Tutor Listings</h1>
-    <div class="filters">
-      <div class="filter-items">
-      <input type="search" id="searchInput" placeholder="Search tutors…" aria-label="Search tutors">
-      <select id="priceSelect" aria-label="Filter by price">
-        <option value="">All Prices</option>
-        <option value="low">Under RM20</option>
-        <option value="mid">RM20–RM50</option>
-        <option value="high">Above RM50</option>
-      </select>
-      <select id="subjectSelect" aria-label="Filter by subject">
-        <option value="">All Subjects</option>
-        <option value="english">English</option>
-        <option value="math">Math</option>
-        <option value="science">Science</option>
-      </select>
-      <select id="timeSelect" aria-label="Filter by available time">
-        <option value="">Any Time</option>
-        <option value="morning">Morning</option>
-        <option value="afternoon">Afternoon</option>
-        <option value="evening">Evening</option>
-      </select>
-      <button id="resetButton">Reset Filters</button>
-      <a href="{{ url_for('studentview.studenttimetable') }}" class="viewclass">
-        <button id="viewclass">View Classes</button>
-      </a>
+  <nav class="navbar">
+  <div class="left-items">
+    <input type="search" id="searchInput" placeholder="Search tutors…" aria-label="Search tutors">
+    <select id="priceSelect" aria-label="Filter by price">
+      <option value="">All Prices</option>
+      <option value="low">Under RM20</option>
+      <option value="mid">RM20–RM50</option>
+      <option value="high">Above RM50</option>
+    </select>
+    <select id="subjectSelect" aria-label="Filter by subject">
+      <option value="">All Subjects</option>
+      <option value="english">English</option>
+      <option value="math">Math</option>
+      <option value="science">Science</option>
+    </select>
+    <select id="timeSelect" aria-label="Filter by available time">
+      <option value="">Any Time</option>
+      <option value="morning">Morning</option>
+      <option value="afternoon">Afternoon</option>
+      <option value="evening">Evening</option>
+    </select>
+    <button id="resetButton">Reset Filters</button>
+  </div>
+  <div class="right-items">
+    <div class="dropdown">
+      <button class="dropbtn">Student Profile <i class="fas fa-caret-down"></i></button>
+      <div class="dropdown-content">
+        <a href="{{ url_for('studentview.studenttimetable') }}" class="nav-link">View Classes</a>
+        <a href="/studentprofile/studentprofile">View Profile</a>
+        <a href="http://localhost:5000/login">Logout</a>
       </div>
-      <a href="/studentprofile/studentprofile">studentprofile</a>
-      <a href="http://localhost:5000/login" class="home-icon">
-      <i class="fas fa-home"></i>
-    </a>
     </div>
+  </div>
+</nav>
+
+
+  <header>
+
   </header>
 
   <main id="tutorContainer">

@@ -12,15 +12,84 @@
         display: flex;
         min-height: 100vh;
         background-color: #f0f2f5;
+        flex-direction: column;
     }
 
-    /* Sidebar Styling */
+    /* Sticky Top Navbar */
+    .navbar {
+        position: sticky;
+        top: 0;
+        background-color: #2C3E50;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .navbar .logo {
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+    }
+
+    /* Dropdown Menu */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-btn {
+        background-color: #2C3E50;
+        color: white;
+        padding: 8px 12px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #fff;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        z-index: 1;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .dropdown-content a {
+        color: #333;
+        padding: 10px 16px;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.2s;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Page Layout */
+    .content-wrapper {
+        display: flex;
+        flex-grow: 1;
+    }
+
     .sidebar {
         width: 250px;
         background-color: #fff;
         padding: 15px;
         border-right: 2px solid #ccc;
-        height: 100vh;
+        height: calc(100vh - 50px);
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         display: flex;
         flex-direction: column;
@@ -46,48 +115,16 @@
         color: #1890ff;
     }
 
-    /* Main Content Panel */
     .main-content {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
         padding: 20px 30px;
         background-color: #fff;
         overflow-y: auto;
+        height: calc(100vh - 50px);
     }
 
-    /* Button Container */
-    .button-container {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-    }
-
-    .action-btn {
-        padding: 12px 25px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.2s ease-in-out;
-        text-decoration: none;
-    }
-
-    .action-btn:hover {
-        background-color: #45a049;
-        transform: scale(1.05);
-    }
-
-    .action-btn:active {
-        background-color: #397d3a;
-    }
-
-    /* Chat Panel */
     .chat-panel {
         flex-grow: 1;
         padding: 20px;
@@ -172,9 +209,8 @@
         background-color: #1478d7;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
-        body {
+        .content-wrapper {
             flex-direction: column;
         }
 
@@ -196,74 +232,62 @@
 
         .main-content {
             padding: 10px 15px;
-        }
-
-        .button-container {
-            justify-content: space-around;
-            margin-bottom: 10px;
+            height: auto;
         }
     }
 </style>
 </head>
 <body>
 
-<!-- 左侧学生列表 -->
-<div class="sidebar">
-    <h3>Student List</h3>
-    {% for lesson in lessons %}
-        <div class="student-name" onclick="openChat('{{ lesson.studentname }}')" id="student-{{ loop.index }}">
-            {{ lesson.studentname }}<br>
-            <small>{{ lesson.time }}</small>
+<!-- Sticky Navbar with MMU Logo and Dropdown -->
+<div class="navbar">
+    <div class="logo">MMU</div>
+    <div class="dropdown">
+        <button class="dropdown-btn">Menu ▾</button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('addtime.html') }}">Add Time</a>
+            <a href="{{ url_for('tutorview.tutortimetable') }}">Timetable</a>
+            <a href="{{ url_for('tutorview.acceptlesson') }}">Accept Lessons</a>
+            <a href="{{ url_for('tutorview.viewtranscript') }}">Transcript</a>
+            <a href="{{ url_for('tutorprofile.tutor_profile') }}">Tutor Profile</a>
+            <a href="{{ url_for('login.html') }}">Logout</a>
         </div>
-    {% endfor %}
+    </div>
 </div>
 
-<!-- 右侧主内容区 -->
-<div class="main-content">
-
-    <!-- 顶部导航按钮 -->
-    <div class="button-container">
-        <a href="{{ url_for('addtime.html') }}">
-            <button class="action-btn">Add Time</button>
-        </a>
-        <a href="{{ url_for('tutorview.tutortimetable') }}">
-            <button class="action-btn">Timetable</button>
-        </a>
-        <a href="{{ url_for('tutorview.acceptlesson') }}">
-            <button class="action-btn">Accept Lessons</button>
-        </a>
-        <a href="{{ url_for('tutorview.viewtranscript') }}">
-            <button class="action-btn">Transcript</button>
-        </a>
-        <a href="{{ url_for('tutorprofile.tutor_profile') }}">
-            <button class="action-btn">Tutor Profile</button>
-        </a>
-        <a href="{{ url_for('login.html') }}">
-            <button class="action-btn">Back to Login</button>
-        </a>
+<!-- Page Content -->
+<div class="content-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h3>Student List</h3>
+        {% for lesson in lessons %}
+            <div class="student-name" onclick="openChat('{{ lesson.studentname }}')" id="student-{{ loop.index }}">
+                {{ lesson.studentname }}<br>
+                <small>{{ lesson.time }}</small>
+            </div>
+        {% endfor %}
     </div>
 
-    <!-- 聊天内容面板 -->
-    <div class="chat-panel" id="chat-panel">
-        <h3>Select a student to start chatting</h3>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="chat-panel" id="chat-panel">
+            <h3>Select a student to start chatting</h3>
+        </div>
     </div>
 </div>
 
 <script>
     const lessons = {{ lessons | tojson }};
 
-    // 记录当前选中学生的DOM元素
     let currentActive = null;
 
     function openChat(studentname) {
-        // 找出对应学生的 lesson
         const lesson = lessons.find(l => l.studentname === studentname);
         if (!lesson) {
             document.getElementById('chat-panel').innerHTML = '<p>Student not found.</p>';
             return;
         }
 
-        // 右侧聊天框内容生成
         let chatHTML = `<h3>Chat with ${lesson.studentname}</h3>`;
         chatHTML += `<div><strong>Lesson Time:</strong> ${lesson.time || 'No lesson'}</div><hr>`;
 
@@ -292,7 +316,6 @@
             chatHTML += `<p>No messages yet.</p>`;
         }
 
-        // 发送消息表单
         chatHTML += `
             <hr>
             <form method="POST" enctype="multipart/form-data" action="{{ url_for('tutorview.send_message') }}">
@@ -307,11 +330,9 @@
 
         document.getElementById('chat-panel').innerHTML = chatHTML;
 
-        // 处理左侧高亮
         if (currentActive) {
             currentActive.classList.remove('active');
         }
-        // 找到当前选中学生的 div 加高亮
         const allStudents = document.querySelectorAll('.student-name');
         allStudents.forEach(el => {
             if (el.textContent.trim().startsWith(studentname)) {
@@ -321,7 +342,6 @@
         });
     }
 
-    // 如果URL参数有选中学生，自动打开聊天
     function getUrlParam(name) {
         const url = new URL(window.location.href);
         return url.searchParams.get(name);
