@@ -61,13 +61,29 @@ for row in alltutors:
     intro = onetutor[2]
     subjects = onetutor[3]
     price = onetutor[4]
-    star = onetutor[5]
+    # Fetch reviews
+    cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (str(tutorid),))
+    allstars = cursor.fetchall()
+    cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (str(tutorid),))
+    validstars = cursor.fetchone()
+    totalstars = 0
+    n = 0
+    if validstars is not None:
+        for row in allstars:
+            singlestar = allstars[n]
+            startoadd = singlestar[0]
+            totalstars = totalstars + startoadd
+            n = n + 1
+        averagestar = totalstars / n
+        roundedstar = round(averagestar, 2)
+    else:
+        roundedstar = 'No reviews yet!'
     time = onetutor[6]
     category = onetutor[7]
     picturerow = cursor.execute('SELECT profile_picture FROM Users WHERE id = ?', (tutorid,)).fetchone()
     picture = picturerow[0]
     picturepath = '\static\profilepicture\\' + picture
-    jsontutor = {'name' : tutorname, 'price' : price, 'rating' : star, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro, 'img' : picturepath}
+    jsontutor = {'name' : tutorname, 'price' : price, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro, 'img' : picturepath, 'rating' : roundedstar}
     tutors.append(jsontutor)
     i = i + 1
 
@@ -136,11 +152,11 @@ def submit_review():
     # Commits the changes
     conn.commit()
 
-    # Load existing reviews
-    reviews_data = {}
-    if os.path.exists(REVIEWS_FILE):
-        with open(REVIEWS_FILE, 'r') as file:
-            reviews_data = json.load(file)
+    # # Load existing reviews
+    # reviews_data = {}
+    # if os.path.exists(REVIEWS_FILE):
+    #     with open(REVIEWS_FILE, 'r') as file:
+    #         reviews_data = json.load(file)
 
     return redirect(url_for('studentview.reviews', name=tutor_name))
 
@@ -159,7 +175,7 @@ def studenttimetable():
     validtutors = cursor.fetchone()
 
     if validtutors is None:
-        return 'No Lessons!'
+        return render_template('studenttimetable.html', classes=classes)
     elif alltutors is not None:
         for row in alltutors:
             lesson = alltutors[i]
@@ -180,7 +196,11 @@ def studenttimetable():
             tutorname = tutorrow[0]
             cursor.execute('SELECT subjects FROM tutors WHERE id = ?', (tutorid,))
             subjectrow = cursor.fetchone()
-            subject = subjectrow[0]
+            subjectcode = subjectrow[0]
+            cursor.execute('SELECT subjectname FROM subjects WHERE subjectcode = ?', (subjectcode,))
+            subjectrow = cursor.fetchone()
+            subjectname = subjectrow[0]
+            subject = subjectcode + ' ' + subjectname
             jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subject, 'acceptance' : acceptedmessage}
             classes.append(jsontutor)
             i = i + 1

@@ -54,7 +54,7 @@ def addtime():
             flash('You already have a class at this time!')
             return redirect(url_for('addtime.addtime'))
         
-    return redirect('/addtime')
+    return redirect(url_for('addtime.html'))
 
 
 if __name__ == '__main__':

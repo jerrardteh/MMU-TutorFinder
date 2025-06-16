@@ -103,7 +103,7 @@
         <h1>Add Time for Tutor</h1>
         
         <form action="/addtime/submit" method="post">
-            <div class="flash-messages">
+            <!-- <div class="flash-messages"> -->
                 <ul>
                     {% with messages = get_flashed_messages() %}
                         {% if messages %}
@@ -113,6 +113,13 @@
                         {% endif %}
                     {% endwith %}
                 </ul>
+            <!-- </div> -->
+
+            <!-- Show existing time -->
+            <div>
+                {% for daytime in daytime %}
+                    <p>{{ daytime.day }} at {{ daytime.time }}</p>
+                {% endfor %}
             </div>
 
             <label for="day">Day</label>
@@ -136,7 +143,7 @@
 
             <button type="submit">Submit</button>
         </form>
-        <a href="http://localhost:5000/tutorview/" class="back-btn">Back to Tutor View</a>
+        <a href="/tutorview/" class="back-btn">Back to Tutor View</a>
     </div>
     
 </body>

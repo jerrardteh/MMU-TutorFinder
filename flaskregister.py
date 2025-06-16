@@ -34,17 +34,36 @@ def register():
         bio = request.form['bio']
         subject = request.form['subject']
 
-        # 验证学号长度
+        # Check if username already exists
+        cursor.execute('SELECT exists(SELECT 1 FROM Users WHERE username = ?)', (username,))
+        usernamerow = cursor.fetchall()
+        usernametuple = usernamerow[0]
+        usernameexists = usernametuple[0]
+        if usernameexists == 1:
+            flash('Username already exists!')
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+
+        # Check if mmuid is 10 characters
         if len(mmuid) != 10:
             flash('MMUID must be exactly 10 characters!')
             return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
-        # 验证邮箱格式
+        # Check if email ends with "mmu.edu.my" 
         if not email.endswith('mmu.edu.my'):
             flash('Email must end with mmu.edu.my')
             return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
-        # 密码加密
+        # Check if mmuid exists by role
+        cursor.execute('SELECT exists(SELECT 1 FROM Users WHERE mmuid = ? AND role = ?)', (mmuid, role,))
+        mmuidrow = cursor.fetchall()
+        mmuidtuple = mmuidrow[0]
+        mmuidexists = mmuidtuple[0]
+        if mmuidexists == 1:
+            flash ('MMU ID already exists!')
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+
+
+        # Hashes the password
         hashed_password = hashlib.sha256(raw_password.encode('utf-8')).hexdigest()
 
         # 图片处理

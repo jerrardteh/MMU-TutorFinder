@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html>
     <body>
+        <ul>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </ul>
+
     {% for subjects in subjects %}
     <ul>
         <li>{{ subjects.semester }} {{ subjects.code }} {{ subjects.name }}</li>
@@ -8,6 +18,10 @@
     {% endfor %}
 
         <form action="{{ url_for('adminview.submitaddsubjects') }}" method="POST">
+            <label for="semester">Semester:</label>
+            <input name="semester">
+            <br>
+            <br>
             <label for="code">Subject Code:</label>
             <input name="code">
             <br>
