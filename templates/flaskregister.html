@@ -54,14 +54,19 @@
                     <label>Role</label>
                     <div class="radio-group">
                         <div class="radio-option">
-                            <input type="radio" id="student" name="role" value="student" {% if role == 'student' %}checked{% endif %} required>
-                            <label for="student">Student</label>
+                            <input type="radio" class="radio-option" id="student" name="role" value="student" {% if role == 'student' %}checked{% endif %} required>
+                            <label for="student" class="radio-option">Student</label>
                         </div>
                         <div class="radio-option">
-                            <input type="radio" id="tutor" name="role" value="tutor" {% if role =='tutor' %}checked{% endif %} required>
-                            <label for="tutor">Tutor</label>
+                            <input type="radio" class="radio-option" id="tutor" name="role" value="tutor" {% if role =='tutor' %}checked{% endif %} required>
+                            <label for="tutor" class="radio-option">Tutor</label>
                         </div>
                     </div>
+                </div>
+
+                <div class="form-group price-conditional-input" id="priceInput">
+                    <label for="price">Price / Hour (RM)</label>
+                    <input type="number" min="1" step=".01" name="price" id="fare" class="form-control" required placeholder="Enter your desired price" value="{{ price if price else '' }}">
                 </div>
                 
                 <div class="form-group">
@@ -78,6 +83,8 @@
                     </select>
                 </div>
                 
+
+                
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Create Account</button>
                     <a href="/login" class="btn btn-secondary">Back to Login</a>
@@ -85,5 +92,26 @@
             </form>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const studentRadio = document.getElementById('student');
+            const tutorRadio = document.getElementById('tutor');
+            const priceInputDiv = document.getElementById('priceInput');
+
+            function togglePriceInput() {
+                if (tutorRadio.checked) {
+                    priceInputDiv.style.display = 'block';
+                } else {
+                    priceInputDiv.style.display = 'none';
+                }
+            }
+
+            studentRadio.addEventListener('change', togglePriceInput);
+            tutorRadio.addEventListener('change', togglePriceInput);
+
+            togglePriceInput()
+        });
+    </script>
 </body>
 </html>

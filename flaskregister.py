@@ -33,6 +33,7 @@ def register():
         role = request.form['role']
         bio = request.form['bio']
         subject = request.form['subject']
+        price = request.form['price']
 
         # Check if username already exists
         cursor.execute('SELECT exists(SELECT 1 FROM Users WHERE username = ?)', (username,))
@@ -41,17 +42,17 @@ def register():
         usernameexists = usernametuple[0]
         if usernameexists == 1:
             flash('Username already exists!')
-            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject, price = price)
 
         # Check if mmuid is 10 characters
         if len(mmuid) != 10:
             flash('MMUID must be exactly 10 characters!')
-            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject, price = price)
 
         # Check if email ends with "mmu.edu.my" 
         if not email.endswith('mmu.edu.my'):
             flash('Email must end with mmu.edu.my')
-            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject, price = price)
 
         # Check if mmuid exists by role
         cursor.execute('SELECT exists(SELECT 1 FROM Users WHERE mmuid = ? AND role = ?)', (mmuid, role,))
@@ -60,7 +61,7 @@ def register():
         mmuidexists = mmuidtuple[0]
         if mmuidexists == 1:
             flash ('MMU ID already exists!')
-            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject, price = price)
 
 
         # Hashes the password
@@ -90,7 +91,14 @@ def register():
             conn.commit()
         except sqlite3.IntegrityError:
             flash('Email or username already exists.')
-            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
+            return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject, price = price)
+
+        if role == 'tutor':
+            cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
+            idrow = cursor.fetchone()
+            id = idrow[0]
+            cursor.execute('UPDATE tutors SET price = ? WHERE id = ?', (price, id,))
+            conn.commit()
 
         flash('Account created successfully!')
         return redirect(url_for('login.html'))  # 假设你有 login 路由

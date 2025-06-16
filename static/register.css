@@ -173,6 +173,11 @@
             color: #7f8c8d;
             margin-top: 5px;
         }
+
+        .price-conditional-input {
+            display: none;
+            margin-top: 10px;
+        }
         
         @media (max-width: 768px) {
             .registration-container {

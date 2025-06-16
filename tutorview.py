@@ -61,7 +61,7 @@ def getstudents():
     tutorid = tutorrow['id']
 
     # 绑定学生和课程时间
-    cursor.execute('SELECT studentid, time FROM TUTORSSTUDENT WHERE tutorid = ?', (tutorid,))
+    cursor.execute('SELECT studentid, time FROM tutortimetable WHERE tutorid = ?', (tutorid,))
     bound_students = cursor.fetchall()
 
     lessons_dict = {}
@@ -175,9 +175,9 @@ def tutortimetable():
 
     i = 0
     classes = []
-    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0', (tutorid,))
+    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0 AND accepted != 0', (tutorid,))
     allstudents = cursor.fetchall()
-    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0', (tutorid,))
+    cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0 AND accepted != 0', (tutorid,))
     validstudents = cursor.fetchone()
 
     if validstudents is None:

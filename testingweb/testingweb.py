@@ -58,9 +58,13 @@ for row in alltutors:
     onetutor = alltutors[i]
     tutorid = onetutor[0]
     tutorname = onetutor[1]
-    intro = onetutor[2]
-    subjects = onetutor[3]
-    price = onetutor[4]
+    cursor.execute('SELECT bio FROM Users WHERE id = ?', (tutorid,))
+    biorow = cursor.fetchone()
+    intro = biorow[0]
+    cursor.execute('SELECT subjects FROM Users WHERE id = ?', (tutorid,))
+    subjectsrow = cursor.fetchone()
+    subjects = subjectsrow[0]
+    price = onetutor[3]
     # Fetch reviews
     cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (str(tutorid),))
     allstars = cursor.fetchall()
@@ -78,12 +82,10 @@ for row in alltutors:
         roundedstar = round(averagestar, 2)
     else:
         roundedstar = 'No reviews yet!'
-    time = onetutor[6]
-    category = onetutor[7]
     picturerow = cursor.execute('SELECT profile_picture FROM Users WHERE id = ?', (tutorid,)).fetchone()
     picture = picturerow[0]
     picturepath = '\static\profilepicture\\' + picture
-    jsontutor = {'name' : tutorname, 'price' : price, 'subject' : subjects, 'time' : time, 'category' : category, 'intro' : intro, 'img' : picturepath, 'rating' : roundedstar}
+    jsontutor = {'name' : tutorname, 'price' : price, 'subject' : subjects, 'intro' : intro, 'img' : picturepath, 'rating' : roundedstar}
     tutors.append(jsontutor)
     i = i + 1
 
@@ -123,34 +125,39 @@ def reviews():
 
     return render_template('reviews.html', tutor_name=tutor_name, reviews=tutor_reviews)
 
-@app.route('/submit_review', methods=['POST'])
+@app.route('/submit_review', methods=['GET', 'POST'])
 def submit_review():
-    tutor_name = request.form['tutor_name']
-    user = session.get('username')
-    rating = int(request.form['rating'])
-    comment = request.form['comment']
+    if request.method == 'POST':
+        tutor_name = request.form['tutor_name']
+        print(tutor_name)
+        user = session.get('username')
+        print(user)
+        rating = int(request.form['rating'])
+        print(rating)
+        comment = request.form['comment']
+        print(comment)
 
-    # Fetches student's database id
-    cursor.execute('SELECT id FROM USERS WHERE username = ?', (user,))
-    validId = cursor.fetchone()
-    id = validId[0]
-    studentid = str(id)
-    print(studentid)
+        # Fetches student's database id
+        cursor.execute('SELECT id FROM USERS WHERE username = ?', (user,))
+        validId = cursor.fetchone()
+        id = validId[0]
+        studentid = str(id)
+        print(studentid)
     
-    # Fetches tutor's database id
-    cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
-    validId = cursor.fetchone()
-    id = validId[0]
-    tutorid = str(id)
-    print(tutorid)
+        # Fetches tutor's database id
+        cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
+        validId = cursor.fetchone()
+        id = validId[0]
+        tutorid = str(id)
+        print(tutorid)
     
-    # Writes the review into the database 
-    cursor.execute('''INSERT INTO REVIEWS (studentid, tutorid, comment, stars) VALUES (?, ?, ?, ?)''', 
-                   (studentid, tutorid, comment, rating)
-                   )
-    
-    # Commits the changes
-    conn.commit()
+        # Writes the review into the database 
+        cursor.execute('''INSERT INTO REVIEWS (studentid, tutorid, comment, stars) VALUES (?, ?, ?, ?)''', 
+                    (studentid, tutorid, comment, rating)
+                    )
+        
+        # Commits the changes
+        conn.commit()
 
     # # Load existing reviews
     # reviews_data = {}

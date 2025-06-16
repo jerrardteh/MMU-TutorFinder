@@ -141,7 +141,7 @@
     <div class="form-section">
       <div class="card">
         <h2>Leave Your Review</h2>
-        <form method="POST" action="/studentview/submit_review" onsubmit="return handleSubmit(event)">
+        <form method="POST" action="{{ url_for('studentview.submit_review') }}">
           <input type="hidden" name="tutor_name" value="{{ tutor_name }}">
           <div>
             <label>Rating:</label><br>
@@ -181,27 +181,5 @@
     </div>
   </main>
 
-  <script>
-    function handleSubmit(event) {
-      event.preventDefault();
-      const submitBtn = document.getElementById('submitBtn');
-      const successMsg = document.getElementById('successMessage');
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting...';
-
-      setTimeout(() => {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Review';
-        successMsg.style.display = 'block';
-
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-        }, 3000);
-      }, 1500);
-
-      return false; 
-    }
-  </script>
 </body>
 </html>

@@ -34,7 +34,7 @@
           <td>{{ classes.acceptance }}</td>
           <td>
             <form action="{{ url_for('droplesson.dropclasses') }}" method="POST">
-              <input type="hidden" name="droptutorname" value="{{ classes.tutorname }}">
+              <input type="hidden" name="dropname" value="{{ classes.tutorname }}">
               <input type="hidden" name="droptime" value="{{ classes.time }}">
               <input type="hidden" name="dropday" value="{{ classes.day }}">
               <button type="submit" name="dropclass" class="drop-btn">Drop Class</button>

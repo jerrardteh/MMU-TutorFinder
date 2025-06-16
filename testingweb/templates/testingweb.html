@@ -61,9 +61,7 @@
         <p class="rating">
           <a href="{{ url_for('studentview.reviews') }}?name={{ tutor.name|urlencode }}">★ {{ tutor.rating }}</a>
         </p>
-        <p>Category: {{ tutor.category }}</p>
         <p>Subject: {{ tutor.subject|default('Unknown')|capitalize }}</p>
-        <p>Available: {{ tutor.time|default('Any Time')|capitalize }}</p>
         <p>Price: RM{{ tutor.price }}</p>
         <p>Description: <em>{{ tutor.intro }}</em></p>
         <div class="buttons">

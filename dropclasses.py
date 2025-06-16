@@ -12,24 +12,31 @@ def get_db_connection():
 def dropclasses():
     if request.method == 'POST':
         username = session.get('username')
-        tutorname = request.form['droptutorname']
+        dropname = request.form['dropname']
         time = request.form['droptime']
         day = request.form['dropday']
         freeid = '0'
 
         conn, cursor = get_db_connection()
         cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
-        studentrow = cursor.fetchone()
-        studentid = studentrow[0]
+        idrow = cursor.fetchone()
+        id = idrow[0]
 
-        cursor.execute('SELECT id FROM tutors WHERE full_name = ?', (tutorname,))
-        tutorrow = cursor.fetchone()
-        tutorid = tutorrow[0]
+        cursor.execute('SELECT id FROM Users WHERE full_name = ?', (dropname,))
+        droprow = cursor.fetchone()
+        dropid = droprow[0]
 
-        cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, tutorid, day, time, studentid,))
-        conn.commit()
+        cursor.execute('SELECT role FROM Users WHERE username = ?', (username,))
+        rolerow = cursor.fetchone()
+        role = rolerow[0]
 
-        cursor.execute('UPDATE tutortimetable SET studentid = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, tutorid, day, time, studentid,))
-        conn.commit()
-
-    return redirect(url_for('studentview.studenttimetable'))
+        if role == 'student':
+            cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, dropid, day, time, id,))
+            cursor.execute('UPDATE tutortimetable SET studentid = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, dropid, day, time, id,))
+            conn.commit()
+            return redirect(url_for('studentview.studenttimetable'))
+        if role == 'tutor':
+            cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, id, day, time, dropid,))
+            cursor.execute('UPDATE tutortimetable SET studentid = ? WHERE tutorid = ? AND day = ? AND time = ? AND studentid = ?', (freeid, id, day, time, dropid,))
+            conn.commit()
+            return redirect(url_for('tutorview.tutortimetable'))
