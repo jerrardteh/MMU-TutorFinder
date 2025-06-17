@@ -63,7 +63,7 @@
         </p>
         <p>Subject: {{ tutor.subject|default('Unknown')|capitalize }}</p>
         <p>Price: RM{{ tutor.price }}</p>
-        <p>Description: <em>{{ tutor.intro }}</em></p>
+        <p>Description: {{ tutor.intro }}</em></p>
         <div class="buttons">
           <a href="{{ url_for('booklesson.html', tutor=tutor.name) }}">
             <button>Book trial lesson</button>

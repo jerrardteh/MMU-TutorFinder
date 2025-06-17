@@ -1,127 +1,90 @@
 from flask import Flask, render_template, request, redirect, url_for, Blueprint, session
-import json
 import os
 import sqlite3
 
-# Establishes connection to database
+# 创建 Blueprint
+app = Blueprint('studentview', __name__, template_folder='templates')
+app.secret_key = 'your_secret_key'
+
+# 获取数据库连接
 def get_db_connection():
     conn = sqlite3.connect('users.db', check_same_thread=False)
     return conn, conn.cursor()
 
-app = Blueprint('studentview', __name__, template_folder='templates')
-app.secret_key = 'your_secret_key'
+# ✅ tutor 动态构建函数
+def get_all_tutors():
+    conn, cursor = get_db_connection()
+    cursor.execute('SELECT * FROM TUTORS')
+    alltutors = cursor.fetchall()
 
-# Load tutor data
-# tutors = [
-#     {
-#         'name': 'Jonathan P.',
-#         'price': 105,
-#         'rating': 5.0,
-#         'subject': 'english',
-#         'time': 'morning',
-#         'img': 'jonathan.jpg',
-#         'description': 'Experienced English tutor with 10+ years teaching.',
-#         'category': 'Language',
-#         'intro': 'Hello! I’m Jonathan, passionate about helping you achieve fluency.'
-#     },
-#     {
-#         'name': 'Craig G.',
-#         'price': 131,
-#         'rating': 4.5,
-#         'subject': 'english',
-#         'time': 'evening',
-#         'img': 'craig.jpg',
-#         'description': 'IELTS and TOEFL preparation expert.',
-#         'category': 'Language',
-#         'intro': 'Let’s make English fun and practical together!'
-#     },
-#     {
-#         'name': 'Alice M.',
-#         'price': 45,
-#         'rating': 4.8,
-#         'subject': 'math',
-#         'time': 'afternoon',
-#         'img': 'alice.jpg',
-#         'description': 'Math tutor focused on algebra and calculus.',
-#         'category': 'STEM',
-#         'intro': 'I love helping students see how fun math can be!'
-#     }
-# ]
+    tutors = []
+    for onetutor in alltutors:
+        tutorid = onetutor[0]
+        tutorname = onetutor[1]
+        
+        cursor.execute('SELECT bio FROM Users WHERE id = ?', (tutorid,))
+        biorow = cursor.fetchone()
+        intro = biorow[0] if biorow else ''
 
-conn, cursor = get_db_connection()
-cursor.execute('SELECT * FROM TUTORS')
-alltutors = cursor.fetchall()
+        cursor.execute('SELECT subjects FROM Users WHERE id = ?', (tutorid,))
+        subjectsrow = cursor.fetchone()
+        subjects = subjectsrow[0] if subjectsrow else ''
 
-tutors = []
-i = 0
-for row in alltutors:
-    onetutor = alltutors[i]
-    tutorid = onetutor[0]
-    tutorname = onetutor[1]
-    cursor.execute('SELECT bio FROM Users WHERE id = ?', (tutorid,))
-    biorow = cursor.fetchone()
-    intro = biorow[0]
-    cursor.execute('SELECT subjects FROM Users WHERE id = ?', (tutorid,))
-    subjectsrow = cursor.fetchone()
-    subjects = subjectsrow[0]
-    price = onetutor[3]
-    # Fetch reviews
-    cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (str(tutorid),))
-    allstars = cursor.fetchall()
-    cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (str(tutorid),))
-    validstars = cursor.fetchone()
-    totalstars = 0
-    n = 0
-    if validstars is not None:
-        for row in allstars:
-            singlestar = allstars[n]
-            startoadd = singlestar[0]
-            totalstars = totalstars + startoadd
-            n = n + 1
-        averagestar = totalstars / n
-        roundedstar = round(averagestar, 2)
-    else:
-        roundedstar = 'No reviews yet!'
-    picturerow = cursor.execute('SELECT profile_picture FROM Users WHERE id = ?', (tutorid,)).fetchone()
-    picture = picturerow[0]
-    picturepath = '\static\profilepicture\\' + picture
-    jsontutor = {'name' : tutorname, 'price' : price, 'subject' : subjects, 'intro' : intro, 'img' : picturepath, 'rating' : roundedstar}
-    tutors.append(jsontutor)
-    i = i + 1
+        price = onetutor[3]
 
+        cursor.execute('SELECT stars FROM reviews WHERE tutorid = ?', (str(tutorid),))
+        allstars = cursor.fetchall()
+        if allstars:
+            totalstars = sum([s[0] for s in allstars])
+            roundedstar = round(totalstars / len(allstars), 2)
+        else:
+            roundedstar = 'No reviews yet!'
+
+        picturerow = cursor.execute('SELECT profile_picture FROM Users WHERE id = ?', (tutorid,)).fetchone()
+        picture = picturerow[0] if picturerow else 'default.jpg'
+        picturepath = '/static/profilepicture/' + picture
+
+        jsontutor = {
+            'name': tutorname,
+            'price': price,
+            'subject': subjects,
+            'intro': intro,
+            'img': picturepath,
+            'rating': roundedstar
+        }
+        tutors.append(jsontutor)
+    
+    return tutors
 
 @app.route('/')
 def tutorlist():
+    tutors = get_all_tutors()
     return render_template('testingweb.html', tutors=tutors)
-
-# REVIEWS_FILE = os.path.join(os.path.dirname(__file__), 'reviews.json')
 
 @app.route('/reviews')
 def reviews():
     tutor_name = request.args.get('name', '')
-    reviews_data = {}
+    conn, cursor = get_db_connection()
 
     cursor.execute('SELECT ID FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
     tutor = cursor.fetchone()
+    if not tutor:
+        return "Tutor not found", 404
     tutorid = str(tutor[0])
 
     cursor.execute('SELECT * FROM REVIEWS WHERE TUTORID = ?', (tutorid,))
     review = cursor.fetchall()
 
     tutor_reviews = []
-    i = 0
-    for row in review:
-        reviews = review[i]
+    for reviews in review:
         studentid = reviews[0]
         cursor.execute('SELECT FULL_NAME FROM USERS WHERE ID = ?', (studentid,))
         name = cursor.fetchone()
-        fullname = name[0]
-
+        fullname = name[0] if name else 'Unknown'
         comment = reviews[2]
         star = reviews[3]
-        jsonreview = {'user' : fullname, 'rating' : star, 'comment' : comment}
+        jsonreview = {'user': fullname, 'rating': star, 'comment': comment}
         tutor_reviews.append(jsonreview)
-        i = i + 1
 
     return render_template('reviews.html', tutor_name=tutor_name, reviews=tutor_reviews)
 
@@ -129,93 +92,76 @@ def reviews():
 def submit_review():
     if request.method == 'POST':
         tutor_name = request.form['tutor_name']
-        print(tutor_name)
         user = session.get('username')
-        print(user)
         rating = int(request.form['rating'])
-        print(rating)
         comment = request.form['comment']
-        print(comment)
 
-        # Fetches student's database id
+        conn, cursor = get_db_connection()
+
+        # 获取 student ID
         cursor.execute('SELECT id FROM USERS WHERE username = ?', (user,))
         validId = cursor.fetchone()
-        id = validId[0]
-        studentid = str(id)
-        print(studentid)
-    
-        # Fetches tutor's database id
+        studentid = str(validId[0])
+
+        # 获取 tutor ID
         cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
         validId = cursor.fetchone()
-        id = validId[0]
-        tutorid = str(id)
-        print(tutorid)
-    
-        # Writes the review into the database 
-        cursor.execute('''INSERT INTO REVIEWS (studentid, tutorid, comment, stars) VALUES (?, ?, ?, ?)''', 
-                    (studentid, tutorid, comment, rating)
-                    )
-        
-        # Commits the changes
+        tutorid = str(validId[0])
+
+        # 插入评论
+        cursor.execute('''
+            INSERT INTO REVIEWS (studentid, tutorid, comment, stars)
+            VALUES (?, ?, ?, ?)''',
+            (studentid, tutorid, comment, rating)
+        )
         conn.commit()
 
-    # # Load existing reviews
-    # reviews_data = {}
-    # if os.path.exists(REVIEWS_FILE):
-    #     with open(REVIEWS_FILE, 'r') as file:
-    #         reviews_data = json.load(file)
-
-    return redirect(url_for('studentview.reviews', name=tutor_name))
+        return redirect(url_for('studentview.reviews', name=tutor_name))
 
 @app.route('/timetable')
 def studenttimetable():
     studentusername = session.get('username')
+    conn, cursor = get_db_connection()
     cursor.execute('SELECT id FROM Users WHERE username = ?', (studentusername,))
     studentrow = cursor.fetchone()
-    studentid = studentrow[0]
+    studentid = studentrow[0] if studentrow else None
 
-    i = 0
-    classes = []
+    if not studentid:
+        return "Student not found", 404
+
     cursor.execute('SELECT * FROM tutortimetable WHERE studentid = ?', (studentid,))
     alltutors = cursor.fetchall()
-    cursor.execute('SELECT * FROM tutortimetable WHERE studentid = ?', (studentid,))
-    validtutors = cursor.fetchone()
 
-    if validtutors is None:
-        return render_template('studenttimetable.html', classes=classes)
-    elif alltutors is not None:
-        for row in alltutors:
-            lesson = alltutors[i]
-            tutorid = lesson[2]
-            time = lesson[1]
-            day = lesson[0]
+    classes = []
+    for lesson in alltutors:
+        tutorid = lesson[2]
+        time = lesson[1]
+        day = lesson[0]
+        accepted = lesson[4]
+        acceptedmessage = 'Pending acceptance from tutor' if accepted == 0 else (
+            'Tutor has accepted your class' if accepted == 1 else 'Acceptance status unknown'
+        )
 
-            accepted = lesson[4]
-            if accepted == 0:
-                acceptedmessage = 'Pending acceptance from tutor'
-            elif accepted == 1:
-                acceptedmessage = 'Tutor has accepted your class'
-            else:
-                acceptedmessage = 'Acceptance status unknown'
+        cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (tutorid,))
+        tutorrow = cursor.fetchone()
+        tutorname = tutorrow[0] if tutorrow else 'Unknown'
 
-            cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (tutorid,))
-            tutorrow = cursor.fetchone()
-            tutorname = tutorrow[0]
-            cursor.execute('SELECT subjects FROM tutors WHERE id = ?', (tutorid,))
-            subjectrow = cursor.fetchone()
-            subjectcode = subjectrow[0]
-            cursor.execute('SELECT subjectname FROM subjects WHERE subjectcode = ?', (subjectcode,))
-            subjectrow = cursor.fetchone()
-            subjectname = subjectrow[0]
-            subject = subjectcode + ' ' + subjectname
-            jsontutor = {'tutorname' : tutorname, 'time' : time, 'day' : day, 'subject' : subject, 'acceptance' : acceptedmessage}
-            classes.append(jsontutor)
-            i = i + 1
+        cursor.execute('SELECT subjects FROM tutors WHERE id = ?', (tutorid,))
+        subjectrow = cursor.fetchone()
+        subjectcode = subjectrow[0] if subjectrow else '??'
+
+        cursor.execute('SELECT subjectname FROM subjects WHERE subjectcode = ?', (subjectcode,))
+        subjectname_row = cursor.fetchone()
+        subjectname = subjectname_row[0] if subjectname_row else 'Unknown'
+
+        subject = f'{subjectcode} {subjectname}'
+        jsontutor = {
+            'tutorname': tutorname,
+            'time': time,
+            'day': day,
+            'subject': subject,
+            'acceptance': acceptedmessage
+        }
+        classes.append(jsontutor)
 
     return render_template('studenttimetable.html', classes=classes)
-
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-    

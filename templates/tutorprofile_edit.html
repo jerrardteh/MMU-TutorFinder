@@ -86,6 +86,11 @@
                     {% endfor %}
                 </select>
             </div>
+            <div>
+              <label for="price" class="block text-lg font-semibold mmu-blue mb-1">Hourly Price (RM)</label>
+              <input type="number" name="price" id="price" value="{{ price or '' }}" min="0" step="1"
+               class="w-full rounded-md border border-gray-300 shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-mmu-blue focus:border-mmu-blue transition" />
+            </div>
         </div>
 
         <div>
