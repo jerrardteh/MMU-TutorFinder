@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MMU TutorFinder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    /* Sticky Navbar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      background-color: #2C3E50;
+      padding: 15px 30px;
+      color: white;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+    }
+
+    .navbar .logo {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .img {
+      background: url('ltrputimagehere.jpg') center/cover no-repeat;
+      height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      position: relative;
+    }
+
+    .img::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .img-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 20px;
+    }
+
+    .img h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .img p {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .img .btn {
+      background-color: #2C3E50;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .about {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .about h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    .about p {
+      color: #444;
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+
+    .whyus-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .whyus-card {
+      flex: 1 1 250px;
+      max-width: 300px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .whyus-card i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .whyus-card h3 {
+      margin: 15px 0 10px;
+      font-size: 1.2rem;
+    }
+
+    .whyus-card p {
+      font-size: 0.95rem;
+      color: #444;
+    }
+
+    .cta {
+      background-color: #ecf0f1;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .cta p {
+      margin-bottom: 10px;
+    }
+
+    .cta a {
+      color: #2980b9;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer {
+      background-color: #2C3E50;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    footer a {
+      color: #f1c40f;
+      text-decoration: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .whyus-container {
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar a {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .whyus-card {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .hero p {
+        font-size: 0.95rem;
+      }
+
+      .hero .btn {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><a href="#">MMU TutorFinder</a></div>
+    <div>
+      <a href="#about">About Us</a>
+      <a href="/login">Login</a>
+    </div>
+  </nav>
+
+  <!-- imgbg Section -->
+  <section class="img">
+    <div class="img-content">
+      <h1>Find Your Ideal MMU Tutor</h1>
+      <p>Study More, Stress Less. Exclusively for MMU.</p>
+      <a href="/register" class="btn">Register Now</a>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <h2>About MMU TutorFinder</h2>
+    <p>MMU TutorFinder helps MMU students connect with the right tutors based on subjects, ratings, and availability. Whether you need help for finals or want to improve your skills, we’re here to support your learning journey.</p>
+  </section>
+
+  <!-- Why Us Section -->
+  <section class="about" id="why-us" style="background-color: #f0f3f5;">
+    <h2>Why Choose Us</h2>
+    <div class="whyus-container">
+      <div class="whyus-card">
+        <i class="fas fa-user-graduate" style="color: #3498db;"></i>
+        <h3>Verified Tutors</h3>
+        <p>All tutors are MMU students or alumni carefully verified for subject knowledge and teaching ability.</p>
+      </div>
+      <div class="whyus-card">
+        <i class="fas fa-star" style="color: #f39c12;"></i>
+        <h3>Ratings & Reviews</h3>
+        <p>View real reviews and ratings from other students before you decide. Quality and trust matter.</p>
+      </div>
+      <div class="whyus-card">
+        <i class="fas fa-clock" style="color: #27ae60;"></i>
+        <h3>Flexible Scheduling</h3>
+        <p>Choose the time that fits your schedule. Whether you're an early bird or night owl, we’ve got you covered.</p>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
