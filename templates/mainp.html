@@ -41,7 +41,7 @@
     }
 
     .img {
-      background: url('ltrputimagehere.jpg') center/cover no-repeat;
+      background: url('img/istockphoto-1444142886-612x612.jpg') center/cover no-repeat;
       height: 80vh;
       display: flex;
       align-items: center;
@@ -223,7 +223,7 @@
     <div class="logo"><a href="#">MMU TutorFinder</a></div>
     <div>
       <a href="#about">About Us</a>
-      <a href="/login">Login</a>
+      <a href="{{ url_for('login.html') }}">Login</a>
     </div>
   </nav>
 
@@ -232,7 +232,7 @@
     <div class="img-content">
       <h1>Find Your Ideal MMU Tutor</h1>
       <p>Study More, Stress Less. Exclusively for MMU.</p>
-      <a href="/register" class="btn">Register Now</a>
+      <a href="{{ url_for('register.register') }}" class="btn">Register Now</a>
     </div>
   </section>
 
@@ -240,6 +240,11 @@
   <section class="about" id="about">
     <h2>About MMU TutorFinder</h2>
     <p>MMU TutorFinder helps MMU students connect with the right tutors based on subjects, ratings, and availability. Whether you need help for finals or want to improve your skills, we’re here to support your learning journey.</p>
+  </section>
+
+  <section class="about" id="about">
+    <h2>About Us</h2>
+    <p>We are a group of 3 students from FCI. We made MMU TutorFinder as the project for our Mini IT Project class during our final semester of Foundation.</p>
   </section>
 
   <!-- Why Us Section -->
