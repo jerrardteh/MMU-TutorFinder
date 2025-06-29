@@ -5,24 +5,31 @@ import uuid
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
+# Directory to save uploaded transcripts
 UPLOAD_FOLDER = r"static\transcripts"
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'webp' }
+# Allowed file types for uploads
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'webp'}
 
+# Define Blueprint for tutor view
 tutorview = Blueprint('tutorview', __name__)
 DB_PATH = 'users.db'
 
+# Function to connect to database with row factory
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
+# Function to connect to database with cursor
 def db_connection():
     conn = sqlite3.connect('users.db', check_same_thread=False)
     return conn, conn.cursor()
 
+# Check if uploaded file is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Save uploaded file with a unique name
 def save_file(file, folder):
     file_ext = file.filename.rsplit('.', 1)[-1]
     unique_filename = f"{uuid.uuid4().hex}.{file_ext}"
@@ -32,6 +39,7 @@ def save_file(file, folder):
     file.save(full_path)
     return relative_path
 
+# Save a chat message to the database
 def save_message(sender, receiver, content, msg_type):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     conn = get_db_connection()
@@ -43,6 +51,7 @@ def save_message(sender, receiver, content, msg_type):
     conn.commit()
     conn.close()
 
+# Route to view students and their messages
 @tutorview.route('/', methods=['GET'])
 def getstudents():
     tutorusername = session.get('username')
@@ -52,7 +61,7 @@ def getstudents():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 获取导师ID
+    # Get tutor ID
     cursor.execute('SELECT id FROM Users WHERE username = ?', (tutorusername,))
     tutorrow = cursor.fetchone()
     if not tutorrow:
@@ -60,7 +69,7 @@ def getstudents():
         return 'No tutor found!'
     tutorid = tutorrow['id']
 
-    # 绑定学生和课程时间
+    # Get students linked to this tutor with lesson times
     cursor.execute('SELECT studentid, time FROM tutortimetable WHERE tutorid = ?', (tutorid,))
     bound_students = cursor.fetchall()
 
@@ -82,7 +91,7 @@ def getstudents():
             'time': time
         }
 
-    # 查找所有与导师有聊天记录的学生用户名（sender或receiver）
+    # Find students who have chatted with the tutor
     cursor.execute('''
         SELECT DISTINCT sender FROM ChatMessages WHERE receiver = ?
         UNION
@@ -90,11 +99,11 @@ def getstudents():
     ''', (tutorusername, tutorusername))
     chat_users = cursor.fetchall()
 
+    # Add students from chat history (if not in timetable)
     for row in chat_users:
         username = row[0]
         if username == tutorusername:
             continue
-        # 若不在绑定学生中，添加，时间显示“No lesson”
         if username not in lessons_dict:
             cursor.execute('SELECT full_name FROM Users WHERE username = ?', (username,))
             userrow = cursor.fetchone()
@@ -104,7 +113,7 @@ def getstudents():
                 'time': 'No lesson'
             }
 
-    # 载入聊天记录
+    # Load messages for each student
     for studentusername, info in lessons_dict.items():
         cursor.execute('''
             SELECT sender, receiver, content, type, timestamp
@@ -131,6 +140,7 @@ def getstudents():
 
     return render_template('tutorview.html', lessons=lessons)
 
+# Route for sending a message (text, image, video, file)
 @tutorview.route('/send_message', methods=['POST'])
 def send_message():
     tutorusername = session.get('username')
@@ -144,6 +154,7 @@ def send_message():
     content = request.form.get('message')
     msg_type = 'text'
 
+    # Check for file attachments
     if 'video' in request.files and request.files['video']:
         video_file = request.files['video']
         content = save_file(video_file, 'videos')
@@ -164,6 +175,7 @@ def send_message():
 
     return redirect(url_for('tutorview.getstudents', selected_student=studentname))
 
+# Route to view tutor’s confirmed timetable
 @tutorview.route('/viewtimetable')
 def tutortimetable():
     conn, cursor = db_connection()
@@ -180,6 +192,7 @@ def tutortimetable():
     cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid != 0 AND accepted != 0', (tutorid,))
     validstudents = cursor.fetchone()
 
+    # Build JSON list of confirmed classes
     if validstudents is None:
         return render_template('tutortimetable.html', classes=classes)
     elif allstudents is not None:
@@ -191,12 +204,13 @@ def tutortimetable():
             cursor.execute('SELECT full_name FROM Users WHERE ID = ?', (studentid,))
             studentrow = cursor.fetchone()
             studentname = studentrow[0]
-            jsonstudent = {'studentname' : studentname, 'time' : time, 'day' : day}
+            jsonstudent = {'studentname': studentname, 'time': time, 'day': day}
             classes.append(jsonstudent)
-            i = i + 1
+            i += 1
 
     return render_template('tutortimetable.html', classes=classes)
 
+# Route to view unaccepted lesson requests
 @tutorview.route('/acceptlesson')
 def acceptlesson():
     conn, cursor = db_connection()
@@ -226,12 +240,13 @@ def acceptlesson():
             cursor.execute('SELECT full_name FROM Users WHERE id = ?', (studentid,))
             studentrow = cursor.fetchone()
             studentname = studentrow[0]
-            jsonlesson = {'day' : day, 'time' : time, 'studentname' : studentname}
+            jsonlesson = {'day': day, 'time': time, 'studentname': studentname}
             lessons.append(jsonlesson)
-            i = i + 1
+            i += 1
 
     return render_template('acceptlesson.html', lessons=lessons)
 
+# Route to submit acceptance of a lesson
 @tutorview.route('/acceptlesson/submit', methods=['GET', 'POST'])
 def submitacceptlesson():
     if request.method == 'POST':
@@ -246,11 +261,12 @@ def submitacceptlesson():
         studentid = studentrow[0]
 
         acceptedvalue = '1'
-        cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE day = ? AND time = ? AND studentid =?', (acceptedvalue, day, time, studentid,))
+        cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE day = ? AND time = ? AND studentid = ?', (acceptedvalue, day, time, studentid,))
         conn.commit()
 
     return redirect(url_for('tutorview.acceptlesson'))
 
+# Route to view uploaded transcript and decision
 @tutorview.route('/transcript/view')
 def viewtranscript():
     username = session.get('username')
@@ -268,6 +284,7 @@ def viewtranscript():
     else:
         transcriptpath = 'None'
 
+    # Check transcript decision
     cursor.execute('SELECT accepted FROM transcripts WHERE tutorid = ?', (tutorid,))
     acceptedrow = cursor.fetchone()
     if acceptedrow is not None:
@@ -283,24 +300,27 @@ def viewtranscript():
     else:
         decision = 'You have not uploaded your transcript yet!'
 
-    transcript = [{'transcript' : transcriptpath, 'decision' : decision}]
+    transcript = [{'transcript': transcriptpath, 'decision': decision}]
+    return render_template('viewtranscript.html', transcript=transcript)
 
-    return render_template('viewtranscript.html', transcript = transcript)
-
+# Route to upload a new transcript
 @tutorview.route('/transcript/submit', methods=['GET', 'POST'])
 def submittranscript():
     if request.method == 'POST':
         transcript = request.files['transcript']
         username = session.get('username')
 
-        if allowed_file(transcript.filename) == False:
+        if not allowed_file(transcript.filename):
             flash('Invalid File Type!')
             return redirect(url_for('tutorview.viewtranscript'))
-        elif transcript and allowed_file(transcript.filename):
+
+        elif transcript:
             conn, cursor = db_connection()
             cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
             tutorrow = cursor.fetchone()
             tutorid = tutorrow[0]
+
+            # Check if this tutor has uploaded before
             cursor.execute('SELECT transcriptpath FROM transcripts WHERE tutorid = ?', (tutorid,))
             tutorrow = cursor.fetchone()
             if tutorrow is None:
@@ -310,21 +330,13 @@ def submittranscript():
                 current = tutorrow[0]
                 currentfilename = current.split('.')[0]
                 transcriptnumber = int(currentfilename.split('_')[-1])
-            
-            if transcriptnumber == 0:
-                transcriptnumber = transcriptnumber + 1
-                filename = secure_filename(transcript.filename)
-                splitfilename = filename.rsplit('.', 1)
-                extension = splitfilename[-1]
-                newfilename = username + "_" + str(transcriptnumber) + "." + extension
-                transcript.save(os.path.join(UPLOAD_FOLDER, newfilename))
-            elif transcriptnumber != 0:
-                transcriptnumber = transcriptnumber + 1
-                filename = secure_filename(transcript.filename)
-                splitfilename = filename.rsplit(".", 1)
-                extension = splitfilename[-1]
-                newfilename = username + "_" + str(transcriptnumber) + "." + extension
-                transcript.save(os.path.join(UPLOAD_FOLDER, newfilename))
+
+            # Create new unique filename
+            transcriptnumber += 1
+            filename = secure_filename(transcript.filename)
+            extension = filename.rsplit('.', 1)[-1]
+            newfilename = username + "_" + str(transcriptnumber) + "." + extension
+            transcript.save(os.path.join(UPLOAD_FOLDER, newfilename))
 
             accepted = 0
             cursor.execute('UPDATE transcripts SET transcriptpath = ? WHERE tutorid = ?', (newfilename, tutorid,))
