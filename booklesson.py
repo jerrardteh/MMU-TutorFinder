@@ -33,17 +33,17 @@ def init_db():
     ''')
 
     
-    cursor.execute("SELECT COUNT(*) FROM Users")
-    if cursor.fetchone()[0] == 0:
-        cursor.execute("INSERT INTO Users (username, full_name, password_hash) VALUES (?, ?, ?)", ("tutor1", "John Doe", "hashed_tutor"))
-        cursor.execute("INSERT INTO Users (username, full_name, password_hash) VALUES (?, ?, ?)", ("student1", "Jane Smith", "hashed_student"))
+    # cursor.execute("SELECT COUNT(*) FROM Users")
+    # if cursor.fetchone()[0] == 0:
+    #     cursor.execute("INSERT INTO Users (username, full_name, password_hash) VALUES (?, ?, ?)", ("tutor1", "John Doe", "hashed_tutor"))
+    #     cursor.execute("INSERT INTO Users (username, full_name, password_hash) VALUES (?, ?, ?)", ("student1", "Jane Smith", "hashed_student"))
 
-        cursor.execute("SELECT id FROM Users WHERE full_name = ?", ("John Doe",))
-        tutorid = cursor.fetchone()[0]
+    #     cursor.execute("SELECT id FROM Users WHERE full_name = ?", ("John Doe",))
+    #     tutorid = cursor.fetchone()[0]
 
-        sample_times = [("Monday", "10:00"), ("Wednesday", "14:00"), ("Friday", "09:00")]
-        for day, time in sample_times:
-            cursor.execute("INSERT INTO tutortimetable (day, time, tutorid, studentid) VALUES (?, ?, ?, ?)", (day, time, tutorid, 0))
+    #     sample_times = [("Monday", "10:00"), ("Wednesday", "14:00"), ("Friday", "09:00")]
+    #     for day, time in sample_times:
+    #         cursor.execute("INSERT INTO tutortimetable (day, time, tutorid, studentid) VALUES (?, ?, ?, ?)", (day, time, tutorid, 0))
 
     conn.commit()
     conn.close()
