@@ -34,7 +34,7 @@ app.register_blueprint(adminview_bp, url_prefix='/adminview')
 app.register_blueprint(mainpage_bp, url_prefix='/mainpage')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
 
 
 

@@ -116,4 +116,4 @@ if __name__ == '__main__':
     flask_app = Flask(__name__)
     flask_app.register_blueprint(app, url_prefix='/booklesson')
     flask_app.secret_key = 'your_secret_key'
-    flask_app.run(debug=True)
+    flask_app.run()
