@@ -6,12 +6,18 @@
     <title>Register for MMU TutorFinder</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
 <body>
+    <!-- Main container for the registration page -->
     <div class="registration-container">
+
+        <!-- Header section -->
         <header class="registration-header">
             <h1>Join MMU TutorFinder</h1>
         </header>
         
+        <!-- Main form area -->
         <main class="registration-form">
+
+            <!-- Flash messages for displaying success or error messages -->
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                 <div class="flash-messages">
@@ -23,33 +29,41 @@
                 </div>
                 {% endif %}
             {% endwith %}
-            
+
+            <!-- Registration form starts here -->
             <form action="/register/register" method="post">
+
+                <!-- Full Name input -->
                 <div class="form-group">
                     <label for="fname">Full Name</label>
                     <input type="text" name="fullname" id="fname" class="form-control" required placeholder="Enter your full name" value="{{ fullname if fullname else '' }}">
                 </div>
                 
+                <!-- Username input -->
                 <div class="form-group">
                     <label for="user">Username</label>
                     <input type="text" name="username" id="user" class="form-control" required placeholder="Choose a username" value="{{ username if username else '' }}">
                 </div>
                 
+                <!-- Password input -->
                 <div class="form-group">
                     <label for="pass">Password</label>
                     <input type="password" name="password" id="pass" class="form-control" required placeholder="Create a strong password" value="{{ password if password else '' }}">
                 </div>
                 
+                <!-- MMU Student ID input -->
                 <div class="form-group">
                     <label for="id">Student ID</label>
                     <input type="text" name="mmuid" id="id" class="form-control" required placeholder="Enter your MMU student ID" value="{{ mmuid if mmuid else '' }}">
                 </div>
                 
+                <!-- Email input -->
                 <div class="form-group">
                     <label for="mail">Email</label>
                     <input type="email" name="email" id="mail" class="form-control" required placeholder="your.email@example.com" value="{{ email if email else '' }}">
                 </div>
                 
+                <!-- Role selection: student or tutor -->
                 <div class="form-group">
                     <label>Role</label>
                     <div class="radio-group">
@@ -64,16 +78,19 @@
                     </div>
                 </div>
 
+                <!-- Price input, shown only if 'Tutor' is selected -->
                 <div class="form-group price-conditional-input" id="priceInput">
                     <label for="price">Price / Hour (RM)</label>
                     <input type="number" min="1" step=".01" name="price" id="fare" class="form-control" placeholder="Enter your desired price" value="{{ price if price else '' }}">
                 </div>
                 
+                <!-- Bio textarea -->
                 <div class="form-group">
                     <label for="bio">Bio</label>
                     <textarea name="bio" id="bio" class="form-control" placeholder="Tell us about yourself and your academic background">{{ bio if bio else '' }}</textarea>
                 </div>
                 
+                <!-- Subject selection from dropdown -->
                 <div class="form-group">
                     <label for="subject">Subjects</label>
                     <select name="subject">
@@ -82,9 +99,8 @@
                         {% endfor %}
                     </select>
                 </div>
-                
 
-                
+                <!-- Submit and back buttons -->
                 <div class="button-group">
                     <button type="submit" class="btn btn-primary">Create Account</button>
                     <a href="/login" class="btn btn-secondary">Back to Login</a>
@@ -93,6 +109,7 @@
         </main>
     </div>
 
+    <!-- Script to toggle the price input visibility based on selected role -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const studentRadio = document.getElementById('student');
@@ -114,4 +131,5 @@
         });
     </script>
 </body>
+
 </html>

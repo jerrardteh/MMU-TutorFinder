@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Meta tags for character encoding and responsive design -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Page title shown in browser tab -->
   <title>Accept Lessons</title>
+
+  <!-- Link to external CSS file -->
   <link rel="stylesheet" href="{{ url_for('static', filename='tutortimetable.css') }}">
+
+  <!-- Inline CSS styling for layout and components -->
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,39 +19,57 @@
       margin: 0;
       padding: 0;
     }
+
+    /* Header styling */
     header {
       background-color: #2C3E50;
       color: white;
       text-align: center;
       padding: 20px 0;
     }
+
+    /* Main content container */
     #lessonContainer {
       padding: 20px;
     }
+
+    /* Table structure and layout */
     .timetable {
       width: 100%;
       border-collapse: collapse;
       background-color: #fff;
     }
+
+    /* Table cell padding and border */
     .timetable th, .timetable td {
       padding: 15px;
       text-align: center;
       border: 1px solid #ddd;
     }
+
+    /* Header row style */
     .timetable th {
       background-color: #34495E;
       color: white;
     }
+
+    /* Alternate row coloring */
     .timetable tr:nth-child(even) {
       background-color: #f2f2f2;
     }
+
+    /* Row hover effect */
     .timetable tr:hover {
       background-color: #e0e0e0;
     }
+
+    /* Back button container alignment */
     .back-button {
       text-align: center;
       margin-top: 20px;
     }
+
+    /* Back button styling */
     .back-btn {
       background-color: #E67E22;
       border: none;
@@ -54,9 +79,12 @@
       cursor: pointer;
       border-radius: 5px;
     }
+
     .back-btn:hover {
       background-color: #D35400;
     }
+
+    /* Accept/Deny button styling */
     button {
       padding: 8px 16px;
       background-color: #16A085;
@@ -65,20 +93,25 @@
       cursor: pointer;
       border-radius: 5px;
     }
+
     button:hover {
       background-color: #1ABC9C;
     }
   </style>
 </head>
+
 <body>
 
+  <!-- Page header section -->
   <header>
     <h1>Accept Lessons</h1>
   </header>
 
+  <!-- Main timetable content -->
   <main id="lessonContainer">
     <table class="timetable">
       <thead>
+        <!-- Table column headings -->
         <tr>
           <th>Day</th>
           <th>Time</th>
@@ -87,16 +120,21 @@
         </tr>
       </thead>
       <tbody>
+        <!-- Loop through each lesson entry from the backend -->
         {% for lesson in lessons %}
         <tr>
           <td>{{ lesson.day }}</td>
           <td>{{ lesson.time }}</td>
           <td>{{ lesson.studentname }}</td>
           <td>
+            <!-- Form to submit Accept or Deny decision -->
             <form action="{{ url_for('tutorview.submitacceptlesson') }}" method="POST">
+              <!-- Hidden inputs to pass lesson data -->
               <input type="hidden" value="{{ lesson.day }}" name="day">
               <input type="hidden" value="{{ lesson.time }}" name="time">
               <input type="hidden" value="{{ lesson.studentname }}" name="studentname">
+              
+              <!-- Buttons to accept or deny lesson -->
               <button type="submit" value="accept" name="decision">Accept</button>
               <button type="submit" value="deny" name="decision">Deny</button>
             </form>
@@ -107,6 +145,7 @@
     </table>
   </main>
 
+  <!-- Back to Tutor View button -->
   <div class="back-button">
     <a href="/tutorview/">
       <button class="back-btn">Back to Tutor View</button>

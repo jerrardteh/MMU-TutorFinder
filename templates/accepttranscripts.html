@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta settings for character encoding and responsive layout -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Page title shown on the browser tab -->
     <title>Approve Transcripts - Admin</title>
+
+    <!-- Internal CSS styles for layout and design -->
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -13,6 +18,8 @@
             display: flex;
             justify-content: center;
         }
+
+        /* Centered white container with shadow */
         .container {
             background: #fff;
             padding: 30px 40px;
@@ -20,11 +27,15 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             width: 450px;
         }
+
+        /* Page title styling */
         h1 {
             color: #2C3E50;
             text-align: center;
             margin-bottom: 25px;
         }
+
+        /* Flash message box (e.g. for success/failure alerts) */
         .flash-messages ul {
             list-style-type: none;
             padding: 10px 15px;
@@ -34,38 +45,52 @@
             margin-bottom: 20px;
             border: 1px solid #d8000c;
         }
+
+        /* Each transcript item block */
         .transcript-block {
             margin-bottom: 30px;
             border-bottom: 1px solid #eee;
             padding-bottom: 25px;
         }
+
+        /* Tutor name label */
         .transcript-block p {
             font-weight: 600;
             color: #34495e;
             margin-bottom: 12px;
             font-size: 1.1rem;
         }
+
+        /* Transcript image preview styling */
         .transcript-block img {
             max-width: 100%;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             margin-bottom: 15px;
         }
+
+        /* Form layout for accept/deny buttons */
         form {
             display: flex;
             align-items: center;
             gap: 15px;
             flex-wrap: wrap;
         }
+
+        /* Label for radio inputs */
         label {
             font-weight: 600;
             color: #2C3E50;
             cursor: pointer;
             user-select: none;
         }
+
+        /* Cursor pointer for radio buttons */
         input[type="radio"] {
             cursor: pointer;
         }
+
+        /* Submit button styling */
         button {
             background-color: #2C3E50;
             color: white;
@@ -78,14 +103,18 @@
             margin-left: auto;
             min-width: 100px;
         }
+
         button:hover {
             background-color: #1a2736;
         }
+
+        /* Back to admin view button styling */
         .back-btn {
             display: block;
             margin: 20px auto 0 auto;
             text-align: center;
         }
+
         .back-btn button {
             width: 140px;
             padding: 12px 0;
@@ -93,9 +122,12 @@
     </style>
 </head>
 <body>
+    <!-- Outer container for the whole page content -->
     <div class="container">
+        <!-- Title header -->
         <h1>Approve Transcripts</h1>
 
+        <!-- Display any flash messages (e.g. success/error) -->
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="flash-messages">
@@ -108,23 +140,36 @@
             {% endif %}
         {% endwith %}
 
+        <!-- Loop through all transcript submissions -->
         {% for transcripts in transcripts %}
         <div class="transcript-block">
+            <!-- Show tutor's name -->
             <p>{{ transcripts.tutorname }}</p>
+
+            <!-- Display transcript image -->
             <img src="{{ transcripts.transcript }}" alt="Transcript of {{ transcripts.tutorname }}" />
+
+            <!-- Accept/Deny form for each transcript -->
             <form action="{{ url_for('adminview.accepttranscripts') }}" method="post">
                 <input type="hidden" name="tutorname" value="{{ transcripts.tutorname }}">
+                
+                <!-- Accept radio button -->
                 <label for="radioaccept-{{ loop.index }}">
                     <input type="radio" id="radioaccept-{{ loop.index }}" name="decision" value="accept" required> Accept
                 </label>
+
+                <!-- Deny radio button -->
                 <label for="radiodeny-{{ loop.index }}">
                     <input type="radio" id="radiodeny-{{ loop.index }}" name="decision" value="deny"> Deny
                 </label>
+
+                <!-- Submit form -->
                 <button type="submit">Submit</button>
             </form>
         </div>
         {% endfor %}
 
+        <!-- Back to Admin View button -->
         <div class="back-btn">
             <a href="{{ url_for('adminview.html') }}">
                 <button>Back to Admin View</button>

@@ -101,9 +101,12 @@
     </style>
 </head>
 <body>
+    <!-- Main container for the page content -->
     <div class="container">
+        <!-- Page heading -->
         <h1>Add Subjects</h1>
 
+        <!-- Flash messages (e.g. after form submission) -->
         <ul class="messages">
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
@@ -114,25 +117,32 @@
             {% endwith %}
         </ul>
 
+        <!-- List of existing subjects -->
         <ul class="subject-list">
             {% for subjects in subjects %}
             <li>{{ subjects.semester }} - {{ subjects.code }} - {{ subjects.name }}</li>
             {% endfor %}
         </ul>
 
+        <!-- Form to add a new subject -->
         <form action="{{ url_for('adminview.submitaddsubjects') }}" method="POST" novalidate>
+            <!-- Semester input field -->
             <label for="semester">Semester:</label>
             <input id="semester" name="semester" type="text" placeholder="e.g. Fall 2025" required />
 
+            <!-- Subject code input field -->
             <label for="code">Subject Code:</label>
             <input id="code" name="code" type="text" placeholder="e.g. CS101" required />
 
+            <!-- Subject name input field -->
             <label for="name">Subject Name:</label>
             <input id="name" name="name" type="text" placeholder="e.g. Introduction to Programming" required />
 
+            <!-- Submit button for the form -->
             <button type="submit">Submit</button>
         </form>
 
+        <!-- Back to Admin View button -->
         <div class="back-button">
             <a href="{{ url_for('adminview.html') }}">
                 <button type="button">Back to Admin View</button>
