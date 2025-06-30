@@ -16,13 +16,13 @@ def html():
 @app.route('/addsubjects')
 def addsubjects():
     conn, cursor = get_db_connection()
-
+    # Get existing subjects
     cursor.execute('SELECT * FROM subjects')
     allsubjects = cursor.fetchall()
 
     subjects = []
     i = 0
-
+    # Put existing subject into list for html
     for row in allsubjects:
         subject = allsubjects[i]
         subjectcode = subject[0]
@@ -61,15 +61,18 @@ def submitaddsubjects():
 @app.route('/transcripts')
 def transcripts():
     conn, cursor = get_db_connection()
+    # Get unaccepted transcripts
     unaccepted = 0
     cursor.execute('SELECT * from transcripts WHERE accepted = ?', (unaccepted,))
     transcriptrow = cursor.fetchall()
+    # Check if there is any transcripts to be accepted
     cursor.execute('SELECT * from transcripts WHERE accepted = ?', (unaccepted,))
     validtranscripts = cursor.fetchone()
     i = 0
     transcripts = []
     if validtranscripts is not None:
         for row in transcriptrow:
+            # Puts all unaccepted transcripts into list for html
             transcript = transcriptrow[i]
             tutorid = transcript[0]
             cursor.execute('SELECT full_name FROM Users WHERE id = ?', (tutorid,))

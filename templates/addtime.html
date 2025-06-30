@@ -135,7 +135,6 @@
     <div class="container">
         <h1>Add Time for Tutor</h1>
         
-        <form action="/addtime/submit" method="post">
             <ul>
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
@@ -147,23 +146,31 @@
             </ul>
 
             <!-- Show existing time as a table -->
-            <table class="timetable" aria-label="Existing tutor times">
-                <thead>
-                    <tr>
-                        <th>Day</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for daytime in daytime %}
-                    <tr>
-                        <td>{{ daytime.day }}</td>
-                        <td>{{ daytime.time }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <form action="{{ url_for('addtime.droptime') }}" method="post">
+                <table class="timetable" aria-label="Existing tutor times">
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for daytime in daytime %}
+                        <tr>
+                            <td>{{ daytime.day }}</td>
+                            <td>{{ daytime.time }}</td>
+                            <td><input type="hidden" value="{{ daytime.day }}" name="day">
+                                <input type="hidden" value="{{ daytime.time }}" name="time">
+                                <button type="submit">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
 
+        <form action="/addtime/submit" method="post">
             <label for="day">Day</label>
             <select name="day" id="day" required>
                 <option value="Sunday">Sunday</option>

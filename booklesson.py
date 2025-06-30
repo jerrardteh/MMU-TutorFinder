@@ -68,11 +68,11 @@ def html():
         return f"Tutor '{tutorname}' not found."
     
     tutorid = tutorrow[0]
-
+    # Get the tutor's available lesson
     studentid = '0'
     cursor.execute('SELECT * FROM tutortimetable WHERE tutorid = ? AND studentid = ?', (tutorid, studentid))
     availablelessons = cursor.fetchall()
-
+    # Puts all available lessons into list for html
     lessons = []
     for lesson in availablelessons:
         day, time = lesson[0], lesson[1]
@@ -80,6 +80,7 @@ def html():
 
     return render_template('booklesson.html', lesson=lessons, tutorname=tutorname)
 
+# Route for booking lesson
 @app.route('/submit', methods=['GET', 'POST'])
 def submit():
     if request.method == 'POST':
@@ -88,14 +89,14 @@ def submit():
             return "You must be logged in."
 
         conn, cursor = get_db_connection()
-
+        # Get tutor id
         tutorname = request.form['tutorname']
         cursor.execute('SELECT id FROM Users WHERE full_name = ?', (tutorname,))
         tutorrow = cursor.fetchone()
         if not tutorrow:
             return "Tutor not found."
         tutorid = tutorrow[0]
-
+        # Get student id
         cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
         studentrow = cursor.fetchone()
         if not studentrow:

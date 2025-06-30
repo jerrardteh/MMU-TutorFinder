@@ -105,9 +105,9 @@ def edit_tutor_profile():
         if subject and not is_valid_subject(subject, subjects):
             flash("Invalid subject.", "error")
             subject = ''
-        if price and not price.isdigit():
-            flash("Price must be a number.", "error")
-            return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os, price=price)
+        # if price and not price.isdigit():
+        #     flash("Price must be a number.", "error")
+        #     return render_template('tutorprofile_edit.html', user=user, subjects=subjects, os=os, price=price)
 
         price_changed = price != existing_price
         filename = user['profile_picture'] or 'default.png'

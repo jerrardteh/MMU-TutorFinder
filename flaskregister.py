@@ -19,7 +19,7 @@ def allowed_file(filename):
 def register():
     conn, cursor = get_db_connection()
 
-    # 获取 subjects 列表供选择
+    # Get the list of subjects to choose from
     cursor.execute('SELECT * FROM subjects')
     allsubjects = cursor.fetchall()
     subjects = [{'code': row[0], 'name': row[1], 'semester': row[2]} for row in allsubjects]
@@ -67,7 +67,7 @@ def register():
         # Hashes the password
         hashed_password = hashlib.sha256(raw_password.encode('utf-8')).hexdigest()
 
-        # 图片处理
+        # Image processing
         profile_pic_filename = 'default.jpg'
         # if picture and picture.filename:
         #     if allowed_file(picture.filename):
@@ -81,7 +81,7 @@ def register():
         #         flash('Invalid image format!')
         #         return render_template('flaskregister.html', subjects=subjects, fullname = full_name, username = username, password = raw_password, mmuid = mmuid, email = email, role = role, bio = bio, subject = subject)
 
-        # 写入数据库
+        # Write to database
         try:
             cursor.execute('''
                 INSERT INTO Users (
@@ -101,6 +101,6 @@ def register():
             conn.commit()
 
         flash('Account created successfully!')
-        return redirect(url_for('login.html'))  # 假设你有 login 路由
+        return redirect(url_for('login.html'))  # Assume you have the login route
 
     return render_template('flaskregister.html', subjects=subjects)

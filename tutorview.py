@@ -222,9 +222,9 @@ def acceptlesson():
 
     unaccepted = '0'
     notstudentid = '0'
-    cursor.execute('SELECT * FROM tutortimetable WHERE accepted = ? AND studentid != ?', (unaccepted, notstudentid))
+    cursor.execute('SELECT * FROM tutortimetable WHERE accepted = ? AND studentid != ? AND tutorid = ?', (unaccepted, notstudentid, tutorid))
     alllessons = cursor.fetchall()
-    cursor.execute('SELECT * FROM tutortimetable WHERE accepted = ? AND studentid != ?', (unaccepted, notstudentid))
+    cursor.execute('SELECT * FROM tutortimetable WHERE accepted = ? AND studentid != ? AND tutorid = ?', (unaccepted, notstudentid, tutorid))
     validlessons = cursor.fetchone()
 
     i = 0
@@ -251,19 +251,34 @@ def acceptlesson():
 def submitacceptlesson():
     if request.method == 'POST':
         conn, cursor = db_connection()
+        decision = request.form['decision']
 
-        day = request.form['day']
-        time = request.form['time']
-        studentname = request.form['studentname']
+        if decision == 'accept':
+            day = request.form['day']
+            time = request.form['time']
+            studentname = request.form['studentname']
 
-        cursor.execute('SELECT id FROM Users WHERE full_name = ?', (studentname,))
-        studentrow = cursor.fetchone()
-        studentid = studentrow[0]
+            cursor.execute('SELECT id FROM Users WHERE full_name = ?', (studentname,))
+            studentrow = cursor.fetchone()
+            studentid = studentrow[0]
 
-        acceptedvalue = '1'
-        cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE day = ? AND time = ? AND studentid = ?', (acceptedvalue, day, time, studentid,))
-        conn.commit()
+            acceptedvalue = '1'
+            cursor.execute('UPDATE tutortimetable SET accepted = ? WHERE day = ? AND time = ? AND studentid = ?', (acceptedvalue, day, time, studentid,))
+            conn.commit()
 
+        elif decision == 'deny':
+            day = request.form['day']
+            time = request.form['time']
+            studentname = request.form['studentname']
+
+            cursor.execute('SELECT id FROM Users WHERE full_name = ?', (studentname,))
+            studentrow = cursor.fetchone()
+            studentid = studentrow[0]
+
+            denyvalue = '0'
+            cursor.execute('UPDATE tutortimetable SET studentid = ? WHERE day = ? AND time = ? AND accepted = ?', (denyvalue, day, time, denyvalue,))
+            conn.commit()
+            
     return redirect(url_for('tutorview.acceptlesson'))
 
 # Route to view uploaded transcript and decision

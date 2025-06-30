@@ -2,16 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for, Blueprint,
 import os
 import sqlite3
 
-# 创建 Blueprint
+# Create a blueprint
 app = Blueprint('studentview', __name__, template_folder='templates')
 app.secret_key = 'your_secret_key'
 
-# 获取数据库连接
+# Get database connection
 def get_db_connection():
     conn = sqlite3.connect('users.db', check_same_thread=False)
     return conn, conn.cursor()
 
-# ✅ tutor 动态构建函数
+# Tutor dynamic construction function
 def get_all_tutors():
     conn, cursor = get_db_connection()
     cursor.execute('SELECT * FROM TUTORS')
@@ -61,6 +61,7 @@ def tutorlist():
     tutors = get_all_tutors()
     return render_template('testingweb.html', tutors=tutors)
 
+# Review page
 @app.route('/reviews')
 def reviews():
     tutor_name = request.args.get('name', '')
@@ -75,6 +76,7 @@ def reviews():
     cursor.execute('SELECT * FROM REVIEWS WHERE TUTORID = ?', (tutorid,))
     review = cursor.fetchall()
 
+    # Put all reviews into a list for html
     tutor_reviews = []
     for reviews in review:
         studentid = reviews[0]
@@ -88,6 +90,7 @@ def reviews():
 
     return render_template('reviews.html', tutor_name=tutor_name, reviews=tutor_reviews)
 
+# Route for submitting reviews
 @app.route('/submit_review', methods=['GET', 'POST'])
 def submit_review():
     if request.method == 'POST':
@@ -98,17 +101,17 @@ def submit_review():
 
         conn, cursor = get_db_connection()
 
-        # 获取 student ID
+        # Get student ID
         cursor.execute('SELECT id FROM USERS WHERE username = ?', (user,))
         validId = cursor.fetchone()
         studentid = str(validId[0])
 
-        # 获取 tutor ID
+        # Get tutor ID
         cursor.execute('SELECT id FROM USERS WHERE FULL_NAME = ?', (tutor_name,))
         validId = cursor.fetchone()
         tutorid = str(validId[0])
 
-        # 插入评论
+        # Insert comment
         cursor.execute('''
             INSERT INTO REVIEWS (studentid, tutorid, comment, stars)
             VALUES (?, ?, ?, ?)''',
@@ -118,6 +121,7 @@ def submit_review():
 
         return redirect(url_for('studentview.reviews', name=tutor_name))
 
+# Route for student timetable
 @app.route('/timetable')
 def studenttimetable():
     studentusername = session.get('username')

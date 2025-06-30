@@ -16,16 +16,16 @@ def dropclasses():
         time = request.form['droptime']
         day = request.form['dropday']
         freeid = '0'
-
+        # Get the user's id
         conn, cursor = get_db_connection()
         cursor.execute('SELECT id FROM Users WHERE username = ?', (username,))
         idrow = cursor.fetchone()
         id = idrow[0]
-
+        # Get the other person's id
         cursor.execute('SELECT id FROM Users WHERE full_name = ?', (dropname,))
         droprow = cursor.fetchone()
         dropid = droprow[0]
-
+        
         cursor.execute('SELECT role FROM Users WHERE username = ?', (username,))
         rolerow = cursor.fetchone()
         role = rolerow[0]
