@@ -6,7 +6,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 
 # Directory to save uploaded transcripts
-UPLOAD_FOLDER = r"static\transcripts"
+UPLOAD_FOLDER = r"static/transcripts"
 # Allowed file types for uploads
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'webp'}
 
